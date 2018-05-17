@@ -17,8 +17,8 @@ security:
 server:
   port: 8080
 mybatis:
-  typeAliasesPackage: com.yun.daily.domain
-  mapperLocations: classpath:mappers/*.xml
+  typeAliasesPackage: com.yun.daily.personUser.domain
+  mapperLocations: classpath:mappers/**/*.xml
 management:
    security:
      enabled: false

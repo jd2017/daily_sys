@@ -1,10 +1,12 @@
 package com.yun.daily.system.controller;
 
 import com.yun.daily.personUser.domain.PersonUser;
+import com.yun.daily.personUser.service.PersonUserService;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import javax.annotation.Resource;
 import java.util.Map;
 
 /**
@@ -14,16 +16,16 @@ import java.util.Map;
 
 @Controller
 public class SystemController {
-   /* @Autowired
-    private UserService userService;*/
+    @Resource
+    private PersonUserService personUserService;
     @RequestMapping(value = {"/login","/"})
     public  String sigin(Map<String,Object> model){
         return "login";
     }
 
-    @RequestMapping("/regester")
-    public  String regester(Map<String,Object> model){
-        return "regester";
+    @RequestMapping("/register")
+    public  String register(Map<String,Object> model){
+        return "register";
     }
 
     @RequestMapping("/index")
@@ -36,5 +38,9 @@ public class SystemController {
         System.out.println(1311);
         return "index";
     }
-
+    @RequestMapping(value = "/register",method= RequestMethod.POST)
+    public  String regester(Map<String,Object> model, PersonUser personUser){
+        model.put("user",personUserService.insert(personUser));
+        return "login";
+    }
 }

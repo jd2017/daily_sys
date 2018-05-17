@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="com.yun.daily.personUser.dao.PersonUserMapper" >
+<mapper namespace="com.yun.daily.personUser.dao.PersonUserDao" >
   <resultMap id="BaseResultMap" type="com.yun.daily.personUser.domain.PersonUser" >
     <id column="person_id" property="personId" jdbcType="BIGINT" />
     <result column="corp_id" property="corpId" jdbcType="VARCHAR" />
@@ -37,14 +37,14 @@
     <result column="working_state" property="workingState" jdbcType="VARCHAR" />
   </resultMap>
   <sql id="Base_Column_List" >
-    person_id, corp_id, member_no, accounts, password, name, nationality, person_type, 
-    id_type, id_number, sex, birthday, mobile, telephone, faxes, email, education, academy, 
-    graduation_date, corporation, job_position, address, postcode, picture, member_state, 
-    join_audit_state, register_date, login_count, finally_login_date, user_state, identity_against, 
+    person_id, corp_id, member_no, accounts, password, name, nationality, person_type,
+    id_type, id_number, sex, birthday, mobile, telephone, faxes, email, education, academy,
+    graduation_date, corporation, job_position, address, postcode, picture, member_state,
+    join_audit_state, register_date, login_count, finally_login_date, user_state, identity_against,
     identity_front, working_state
   </sql>
   <select id="selectByPersonId" resultMap="BaseResultMap" parameterType="java.lang.Long" >
-    select 
+    select
     <include refid="Base_Column_List" />
     from td_person_user
     where person_id = #{personId,jdbcType=BIGINT}
@@ -54,28 +54,32 @@
     where person_id = #{personId,jdbcType=BIGINT}
   </delete>
   <insert id="insert" parameterType="com.yun.daily.personUser.domain.PersonUser" >
-    insert into td_person_user (person_id, corp_id, member_no, 
-      accounts, password, name, 
-      nationality, person_type, id_type, 
-      id_number, sex, birthday, 
-      mobile, telephone, faxes, 
-      email, education, academy, 
-      graduation_date, corporation, job_position, 
-      address, postcode, picture, 
-      member_state, join_audit_state, register_date, 
-      login_count, finally_login_date, user_state, 
+    <selectKey resultType="String" keyProperty="personId" order="AFTER">
+      SELECT
+      LAST_INSERT_ID()
+    </selectKey>
+    insert into td_person_user ( corp_id, member_no,
+      accounts, password, name,
+      nationality, person_type, id_type,
+      id_number, sex, birthday,
+      mobile, telephone, faxes,
+      email, education, academy,
+      graduation_date, corporation, job_position,
+      address, postcode, picture,
+      member_state, join_audit_state, register_date,
+      login_count, finally_login_date, user_state,
       identity_against, identity_front, working_state
       )
-    values (#{personId,jdbcType=BIGINT}, #{corpId,jdbcType=VARCHAR}, #{memberNo,jdbcType=VARCHAR}, 
-      #{accounts,jdbcType=VARCHAR}, #{password,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, 
-      #{nationality,jdbcType=VARCHAR}, #{personType,jdbcType=VARCHAR}, #{idType,jdbcType=VARCHAR}, 
-      #{idNumber,jdbcType=VARCHAR}, #{sex,jdbcType=VARCHAR}, #{birthday,jdbcType=VARCHAR}, 
-      #{mobile,jdbcType=VARCHAR}, #{telephone,jdbcType=VARCHAR}, #{faxes,jdbcType=VARCHAR}, 
-      #{email,jdbcType=VARCHAR}, #{education,jdbcType=VARCHAR}, #{academy,jdbcType=VARCHAR}, 
-      #{graduationDate,jdbcType=VARCHAR}, #{corporation,jdbcType=VARCHAR}, #{jobPosition,jdbcType=VARCHAR}, 
-      #{address,jdbcType=VARCHAR}, #{postcode,jdbcType=VARCHAR}, #{picture,jdbcType=VARCHAR}, 
-      #{memberState,jdbcType=VARCHAR}, #{joinAuditState,jdbcType=VARCHAR}, #{registerDate,jdbcType=VARCHAR}, 
-      #{loginCount,jdbcType=VARCHAR}, #{finallyLoginDate,jdbcType=VARCHAR}, #{userState,jdbcType=VARCHAR}, 
+    values ( #{corpId}, #{memberNo,jdbcType=VARCHAR},
+      #{accounts,jdbcType=VARCHAR}, #{password,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR},
+      #{nationality,jdbcType=VARCHAR}, #{personType,jdbcType=VARCHAR}, #{idType,jdbcType=VARCHAR},
+      #{idNumber,jdbcType=VARCHAR}, #{sex,jdbcType=VARCHAR}, #{birthday,jdbcType=VARCHAR},
+      #{mobile,jdbcType=VARCHAR}, #{telephone,jdbcType=VARCHAR}, #{faxes,jdbcType=VARCHAR},
+      #{email,jdbcType=VARCHAR}, #{education,jdbcType=VARCHAR}, #{academy,jdbcType=VARCHAR},
+      #{graduationDate,jdbcType=VARCHAR}, #{corporation,jdbcType=VARCHAR}, #{jobPosition,jdbcType=VARCHAR},
+      #{address,jdbcType=VARCHAR}, #{postcode,jdbcType=VARCHAR}, #{picture,jdbcType=VARCHAR},
+      #{memberState,jdbcType=VARCHAR}, #{joinAuditState,jdbcType=VARCHAR}, #{registerDate,jdbcType=VARCHAR},
+      #{loginCount,jdbcType=VARCHAR}, #{finallyLoginDate,jdbcType=VARCHAR}, #{userState,jdbcType=VARCHAR},
       #{identityAgainst,jdbcType=VARCHAR}, #{identityFront,jdbcType=VARCHAR}, #{workingState,jdbcType=VARCHAR}
       )
   </insert>
