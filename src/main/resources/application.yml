@@ -1,0 +1,34 @@
+spring:
+  profiles:
+    active: dev
+  application:
+    name: daily-service
+    thymeleaf:
+        prefix: classpath:/templates/
+        suffix: .html
+        mode: HTML5
+        encoding: utf-8
+        content-type: text/html
+        cache: false
+security:
+    user:
+       name: admin
+       password: 0
+server:
+  port: 8080
+mybatis:
+  typeAliasesPackage: com.yun.daily.domain
+  mapperLocations: classpath:mappers/*.xml
+management:
+   security:
+     enabled: false
+     context-path: /admin
+---
+spring:
+  profiles: dev
+  datasource:
+    url: jdbc:mysql://39.106.13.197:3306/daily
+    username: root
+    password: root
+    driver-class-name: com.mysql.jdbc.Driver
+    type: com.alibaba.druid.pool.DruidDataSource

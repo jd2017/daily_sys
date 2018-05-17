@@ -1,0 +1,324 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.yun.daily.personUser.dao.PersonUserMapper" >
+  <resultMap id="BaseResultMap" type="com.yun.daily.personUser.domain.PersonUser" >
+    <id column="person_id" property="personId" jdbcType="BIGINT" />
+    <result column="corp_id" property="corpId" jdbcType="VARCHAR" />
+    <result column="member_no" property="memberNo" jdbcType="VARCHAR" />
+    <result column="accounts" property="accounts" jdbcType="VARCHAR" />
+    <result column="password" property="password" jdbcType="VARCHAR" />
+    <result column="name" property="name" jdbcType="VARCHAR" />
+    <result column="nationality" property="nationality" jdbcType="VARCHAR" />
+    <result column="person_type" property="personType" jdbcType="VARCHAR" />
+    <result column="id_type" property="idType" jdbcType="VARCHAR" />
+    <result column="id_number" property="idNumber" jdbcType="VARCHAR" />
+    <result column="sex" property="sex" jdbcType="VARCHAR" />
+    <result column="birthday" property="birthday" jdbcType="VARCHAR" />
+    <result column="mobile" property="mobile" jdbcType="VARCHAR" />
+    <result column="telephone" property="telephone" jdbcType="VARCHAR" />
+    <result column="faxes" property="faxes" jdbcType="VARCHAR" />
+    <result column="email" property="email" jdbcType="VARCHAR" />
+    <result column="education" property="education" jdbcType="VARCHAR" />
+    <result column="academy" property="academy" jdbcType="VARCHAR" />
+    <result column="graduation_date" property="graduationDate" jdbcType="VARCHAR" />
+    <result column="corporation" property="corporation" jdbcType="VARCHAR" />
+    <result column="job_position" property="jobPosition" jdbcType="VARCHAR" />
+    <result column="address" property="address" jdbcType="VARCHAR" />
+    <result column="postcode" property="postcode" jdbcType="VARCHAR" />
+    <result column="picture" property="picture" jdbcType="VARCHAR" />
+    <result column="member_state" property="memberState" jdbcType="VARCHAR" />
+    <result column="join_audit_state" property="joinAuditState" jdbcType="VARCHAR" />
+    <result column="register_date" property="registerDate" jdbcType="VARCHAR" />
+    <result column="login_count" property="loginCount" jdbcType="VARCHAR" />
+    <result column="finally_login_date" property="finallyLoginDate" jdbcType="VARCHAR" />
+    <result column="user_state" property="userState" jdbcType="VARCHAR" />
+    <result column="identity_against" property="identityAgainst" jdbcType="VARCHAR" />
+    <result column="identity_front" property="identityFront" jdbcType="VARCHAR" />
+    <result column="working_state" property="workingState" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    person_id, corp_id, member_no, accounts, password, name, nationality, person_type, 
+    id_type, id_number, sex, birthday, mobile, telephone, faxes, email, education, academy, 
+    graduation_date, corporation, job_position, address, postcode, picture, member_state, 
+    join_audit_state, register_date, login_count, finally_login_date, user_state, identity_against, 
+    identity_front, working_state
+  </sql>
+  <select id="selectByPersonId" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from td_person_user
+    where person_id = #{personId,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPersonId" parameterType="java.lang.Long" >
+    delete from td_person_user
+    where person_id = #{personId,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.yun.daily.personUser.domain.PersonUser" >
+    insert into td_person_user (person_id, corp_id, member_no, 
+      accounts, password, name, 
+      nationality, person_type, id_type, 
+      id_number, sex, birthday, 
+      mobile, telephone, faxes, 
+      email, education, academy, 
+      graduation_date, corporation, job_position, 
+      address, postcode, picture, 
+      member_state, join_audit_state, register_date, 
+      login_count, finally_login_date, user_state, 
+      identity_against, identity_front, working_state
+      )
+    values (#{personId,jdbcType=BIGINT}, #{corpId,jdbcType=VARCHAR}, #{memberNo,jdbcType=VARCHAR}, 
+      #{accounts,jdbcType=VARCHAR}, #{password,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, 
+      #{nationality,jdbcType=VARCHAR}, #{personType,jdbcType=VARCHAR}, #{idType,jdbcType=VARCHAR}, 
+      #{idNumber,jdbcType=VARCHAR}, #{sex,jdbcType=VARCHAR}, #{birthday,jdbcType=VARCHAR}, 
+      #{mobile,jdbcType=VARCHAR}, #{telephone,jdbcType=VARCHAR}, #{faxes,jdbcType=VARCHAR}, 
+      #{email,jdbcType=VARCHAR}, #{education,jdbcType=VARCHAR}, #{academy,jdbcType=VARCHAR}, 
+      #{graduationDate,jdbcType=VARCHAR}, #{corporation,jdbcType=VARCHAR}, #{jobPosition,jdbcType=VARCHAR}, 
+      #{address,jdbcType=VARCHAR}, #{postcode,jdbcType=VARCHAR}, #{picture,jdbcType=VARCHAR}, 
+      #{memberState,jdbcType=VARCHAR}, #{joinAuditState,jdbcType=VARCHAR}, #{registerDate,jdbcType=VARCHAR}, 
+      #{loginCount,jdbcType=VARCHAR}, #{finallyLoginDate,jdbcType=VARCHAR}, #{userState,jdbcType=VARCHAR}, 
+      #{identityAgainst,jdbcType=VARCHAR}, #{identityFront,jdbcType=VARCHAR}, #{workingState,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.yun.daily.personUser.domain.PersonUser" >
+    insert into td_person_user
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="personId != null" >
+        person_id,
+      </if>
+      <if test="corpId != null" >
+        corp_id,
+      </if>
+      <if test="memberNo != null" >
+        member_no,
+      </if>
+      <if test="accounts != null" >
+        accounts,
+      </if>
+      <if test="password != null" >
+        password,
+      </if>
+      <if test="name != null" >
+        name,
+      </if>
+      <if test="nationality != null" >
+        nationality,
+      </if>
+      <if test="personType != null" >
+        person_type,
+      </if>
+      <if test="idType != null" >
+        id_type,
+      </if>
+      <if test="idNumber != null" >
+        id_number,
+      </if>
+      <if test="sex != null" >
+        sex,
+      </if>
+      <if test="birthday != null" >
+        birthday,
+      </if>
+      <if test="mobile != null" >
+        mobile,
+      </if>
+      <if test="telephone != null" >
+        telephone,
+      </if>
+      <if test="faxes != null" >
+        faxes,
+      </if>
+      <if test="email != null" >
+        email,
+      </if>
+      <if test="education != null" >
+        education,
+      </if>
+      <if test="academy != null" >
+        academy,
+      </if>
+      <if test="graduationDate != null" >
+        graduation_date,
+      </if>
+      <if test="corporation != null" >
+        corporation,
+      </if>
+      <if test="jobPosition != null" >
+        job_position,
+      </if>
+      <if test="address != null" >
+        address,
+      </if>
+      <if test="postcode != null" >
+        postcode,
+      </if>
+      <if test="picture != null" >
+        picture,
+      </if>
+      <if test="memberState != null" >
+        member_state,
+      </if>
+      <if test="joinAuditState != null" >
+        join_audit_state,
+      </if>
+      <if test="registerDate != null" >
+        register_date,
+      </if>
+      <if test="loginCount != null" >
+        login_count,
+      </if>
+      <if test="finallyLoginDate != null" >
+        finally_login_date,
+      </if>
+      <if test="userState != null" >
+        user_state,
+      </if>
+      <if test="identityAgainst != null" >
+        identity_against,
+      </if>
+      <if test="identityFront != null" >
+        identity_front,
+      </if>
+      <if test="workingState != null" >
+        working_state,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="personId != null" >
+        #{personId,jdbcType=BIGINT},
+      </if>
+      <if test="corpId != null" >
+        #{corpId,jdbcType=VARCHAR},
+      </if>
+      <if test="memberNo != null" >
+        #{memberNo,jdbcType=VARCHAR},
+      </if>
+      <if test="accounts != null" >
+        #{accounts,jdbcType=VARCHAR},
+      </if>
+      <if test="password != null" >
+        #{password,jdbcType=VARCHAR},
+      </if>
+      <if test="name != null" >
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="nationality != null" >
+        #{nationality,jdbcType=VARCHAR},
+      </if>
+      <if test="personType != null" >
+        #{personType,jdbcType=VARCHAR},
+      </if>
+      <if test="idType != null" >
+        #{idType,jdbcType=VARCHAR},
+      </if>
+      <if test="idNumber != null" >
+        #{idNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="sex != null" >
+        #{sex,jdbcType=VARCHAR},
+      </if>
+      <if test="birthday != null" >
+        #{birthday,jdbcType=VARCHAR},
+      </if>
+      <if test="mobile != null" >
+        #{mobile,jdbcType=VARCHAR},
+      </if>
+      <if test="telephone != null" >
+        #{telephone,jdbcType=VARCHAR},
+      </if>
+      <if test="faxes != null" >
+        #{faxes,jdbcType=VARCHAR},
+      </if>
+      <if test="email != null" >
+        #{email,jdbcType=VARCHAR},
+      </if>
+      <if test="education != null" >
+        #{education,jdbcType=VARCHAR},
+      </if>
+      <if test="academy != null" >
+        #{academy,jdbcType=VARCHAR},
+      </if>
+      <if test="graduationDate != null" >
+        #{graduationDate,jdbcType=VARCHAR},
+      </if>
+      <if test="corporation != null" >
+        #{corporation,jdbcType=VARCHAR},
+      </if>
+      <if test="jobPosition != null" >
+        #{jobPosition,jdbcType=VARCHAR},
+      </if>
+      <if test="address != null" >
+        #{address,jdbcType=VARCHAR},
+      </if>
+      <if test="postcode != null" >
+        #{postcode,jdbcType=VARCHAR},
+      </if>
+      <if test="picture != null" >
+        #{picture,jdbcType=VARCHAR},
+      </if>
+      <if test="memberState != null" >
+        #{memberState,jdbcType=VARCHAR},
+      </if>
+      <if test="joinAuditState != null" >
+        #{joinAuditState,jdbcType=VARCHAR},
+      </if>
+      <if test="registerDate != null" >
+        #{registerDate,jdbcType=VARCHAR},
+      </if>
+      <if test="loginCount != null" >
+        #{loginCount,jdbcType=VARCHAR},
+      </if>
+      <if test="finallyLoginDate != null" >
+        #{finallyLoginDate,jdbcType=VARCHAR},
+      </if>
+      <if test="userState != null" >
+        #{userState,jdbcType=VARCHAR},
+      </if>
+      <if test="identityAgainst != null" >
+        #{identityAgainst,jdbcType=VARCHAR},
+      </if>
+      <if test="identityFront != null" >
+        #{identityFront,jdbcType=VARCHAR},
+      </if>
+      <if test="workingState != null" >
+        #{workingState,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+
+  <update id="updateByPersonId" parameterType="com.yun.daily.personUser.domain.PersonUser" >
+    update td_person_user
+    set corp_id = #{corpId,jdbcType=VARCHAR},
+      member_no = #{memberNo,jdbcType=VARCHAR},
+      accounts = #{accounts,jdbcType=VARCHAR},
+      password = #{password,jdbcType=VARCHAR},
+      name = #{name,jdbcType=VARCHAR},
+      nationality = #{nationality,jdbcType=VARCHAR},
+      person_type = #{personType,jdbcType=VARCHAR},
+      id_type = #{idType,jdbcType=VARCHAR},
+      id_number = #{idNumber,jdbcType=VARCHAR},
+      sex = #{sex,jdbcType=VARCHAR},
+      birthday = #{birthday,jdbcType=VARCHAR},
+      mobile = #{mobile,jdbcType=VARCHAR},
+      telephone = #{telephone,jdbcType=VARCHAR},
+      faxes = #{faxes,jdbcType=VARCHAR},
+      email = #{email,jdbcType=VARCHAR},
+      education = #{education,jdbcType=VARCHAR},
+      academy = #{academy,jdbcType=VARCHAR},
+      graduation_date = #{graduationDate,jdbcType=VARCHAR},
+      corporation = #{corporation,jdbcType=VARCHAR},
+      job_position = #{jobPosition,jdbcType=VARCHAR},
+      address = #{address,jdbcType=VARCHAR},
+      postcode = #{postcode,jdbcType=VARCHAR},
+      picture = #{picture,jdbcType=VARCHAR},
+      member_state = #{memberState,jdbcType=VARCHAR},
+      join_audit_state = #{joinAuditState,jdbcType=VARCHAR},
+      register_date = #{registerDate,jdbcType=VARCHAR},
+      login_count = #{loginCount,jdbcType=VARCHAR},
+      finally_login_date = #{finallyLoginDate,jdbcType=VARCHAR},
+      user_state = #{userState,jdbcType=VARCHAR},
+      identity_against = #{identityAgainst,jdbcType=VARCHAR},
+      identity_front = #{identityFront,jdbcType=VARCHAR},
+      working_state = #{workingState,jdbcType=VARCHAR}
+    where person_id = #{personId,jdbcType=BIGINT}
+  </update>
+</mapper>
