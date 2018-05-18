@@ -10,12 +10,20 @@ spring:
         encoding: utf-8
         content-type: text/html
         cache: false
+  mvc:
+    favicon:
+      enabled: false
 security:
     user:
        name: admin
        password: 0
 server:
-  port: 8080
+  port: 8443
+  ssl:
+    key-store: .keystore
+    key-store-password: 123456
+    key-store-type: JKS
+    key-alias: tomcat
 mybatis:
   typeAliasesPackage: com.yun.daily.personUser.domain
   mapperLocations: classpath:mappers/**/*.xml
