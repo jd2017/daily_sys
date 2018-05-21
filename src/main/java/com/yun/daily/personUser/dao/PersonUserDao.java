@@ -2,9 +2,7 @@ package com.yun.daily.personUser.dao;
 
 import com.yun.daily.personUser.domain.PersonUser;
 import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Param;
-
-import java.util.List;
+import org.apache.ibatis.annotations.Select;
 
 @Mapper
 public interface PersonUserDao {
@@ -13,4 +11,5 @@ public interface PersonUserDao {
     int insert(PersonUser personUser);
     int insertSelective(PersonUser personUser);
     int updateByPersonId(PersonUser personUser);
+
 }

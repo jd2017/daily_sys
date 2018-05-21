@@ -27,4 +27,5 @@ public class PersonUserService {
     public int updateByPersonId(PersonUser personUser){
         return personUserDao.updateByPersonId(personUser);
     };
+
 }

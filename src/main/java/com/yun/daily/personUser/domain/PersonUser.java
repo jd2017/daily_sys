@@ -13,7 +13,7 @@ public class PersonUser {
 
     private String memberNo;
 
-    private String accounts;
+    private String account;
 
     private String password;
 

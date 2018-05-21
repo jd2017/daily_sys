@@ -2,6 +2,10 @@ package com.yun.daily.system.controller;
 
 import com.yun.daily.personUser.domain.PersonUser;
 import com.yun.daily.personUser.service.PersonUserService;
+import com.yun.daily.system.service.AuthService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -15,9 +19,14 @@ import java.util.Map;
 
 
 @Controller
-public class SystemController {
-    @Resource
+public class AuthController {
+    @Autowired
     private PersonUserService personUserService;
+
+
+    @Autowired
+    private AuthService authService;
+
     @RequestMapping(value = {"/login","/"})
     public  String sigin(Map<String,Object> model){
         return "login";
@@ -34,13 +43,13 @@ public class SystemController {
     }
 
     @RequestMapping(value = "/login",method= RequestMethod.POST)
-    public  String login(Map<String,Object> model, PersonUser personUser){
-        System.out.println(1311);
-        return "index";
+    public  ResponseEntity<?> login(Map<String,Object> model, PersonUser personUser) throws AuthenticationException{
+        final String token = authService.login(personUser.getAccount(),personUser.getPassword());
+        return ResponseEntity.ok(token);
     }
     @RequestMapping(value = "/register",method= RequestMethod.POST)
     public  String regester(Map<String,Object> model, PersonUser personUser){
         model.put("user",personUserService.insert(personUser));
-        return "login";
+        return "/login";
     }
 }

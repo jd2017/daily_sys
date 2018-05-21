@@ -5,7 +5,7 @@
     <id column="person_id" property="personId" jdbcType="BIGINT" />
     <result column="corp_id" property="corpId" jdbcType="VARCHAR" />
     <result column="member_no" property="memberNo" jdbcType="VARCHAR" />
-    <result column="accounts" property="accounts" jdbcType="VARCHAR" />
+    <result column="account" property="account" jdbcType="VARCHAR" />
     <result column="password" property="password" jdbcType="VARCHAR" />
     <result column="name" property="name" jdbcType="VARCHAR" />
     <result column="nationality" property="nationality" jdbcType="VARCHAR" />
@@ -37,7 +37,7 @@
     <result column="working_state" property="workingState" jdbcType="VARCHAR" />
   </resultMap>
   <sql id="Base_Column_List" >
-    person_id, corp_id, member_no, accounts, password, name, nationality, person_type,
+    person_id, corp_id, member_no, account, password, name, nationality, person_type,
     id_type, id_number, sex, birthday, mobile, telephone, faxes, email, education, academy,
     graduation_date, corporation, job_position, address, postcode, picture, member_state,
     join_audit_state, register_date, login_count, finally_login_date, user_state, identity_against,
@@ -59,7 +59,7 @@
       LAST_INSERT_ID()
     </selectKey>
     insert into td_person_user ( corp_id, member_no,
-      accounts, password, name,
+      account, password, name,
       nationality, person_type, id_type,
       id_number, sex, birthday,
       mobile, telephone, faxes,
@@ -71,7 +71,7 @@
       identity_against, identity_front, working_state
       )
     values ( #{corpId}, #{memberNo,jdbcType=VARCHAR},
-      #{accounts,jdbcType=VARCHAR}, #{password,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR},
+      #{account,jdbcType=VARCHAR}, #{password,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR},
       #{nationality,jdbcType=VARCHAR}, #{personType,jdbcType=VARCHAR}, #{idType,jdbcType=VARCHAR},
       #{idNumber,jdbcType=VARCHAR}, #{sex,jdbcType=VARCHAR}, #{birthday,jdbcType=VARCHAR},
       #{mobile,jdbcType=VARCHAR}, #{telephone,jdbcType=VARCHAR}, #{faxes,jdbcType=VARCHAR},
@@ -95,8 +95,8 @@
       <if test="memberNo != null" >
         member_no,
       </if>
-      <if test="accounts != null" >
-        accounts,
+      <if test="account != null" >
+        account,
       </if>
       <if test="password != null" >
         password,
@@ -196,8 +196,8 @@
       <if test="memberNo != null" >
         #{memberNo,jdbcType=VARCHAR},
       </if>
-      <if test="accounts != null" >
-        #{accounts,jdbcType=VARCHAR},
+      <if test="account != null" >
+        #{account,jdbcType=VARCHAR},
       </if>
       <if test="password != null" >
         #{password,jdbcType=VARCHAR},
@@ -293,7 +293,7 @@
     update td_person_user
     set corp_id = #{corpId,jdbcType=VARCHAR},
       member_no = #{memberNo,jdbcType=VARCHAR},
-      accounts = #{accounts,jdbcType=VARCHAR},
+      account = #{account,jdbcType=VARCHAR},
       password = #{password,jdbcType=VARCHAR},
       name = #{name,jdbcType=VARCHAR},
       nationality = #{nationality,jdbcType=VARCHAR},

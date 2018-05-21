@@ -35,7 +35,7 @@ management:
 spring:
   profiles: dev
   datasource:
-    url: jdbc:mysql://39.106.13.197:3306/daily
+    url: jdbc:mysql://39.106.13.197:3306/daily?useSSL=false
     username: root
     password: root
     driver-class-name: com.mysql.jdbc.Driver
