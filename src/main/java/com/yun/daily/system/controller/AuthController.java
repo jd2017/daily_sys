@@ -42,11 +42,26 @@ public class AuthController {
         return "index";
     }
 
+    /**
+     * 登录
+     * @param model
+     * @param personUser
+     * @return
+     * @throws AuthenticationException
+     */
     @RequestMapping(value = "/login",method= RequestMethod.POST)
     public  ResponseEntity<?> login(Map<String,Object> model, PersonUser personUser) throws AuthenticationException{
         final String token = authService.login(personUser.getAccount(),personUser.getPassword());
-        return ResponseEntity.ok(token);
+        ResponseEntity<?> result = ResponseEntity.ok(token);
+        return result;
     }
+
+    /**
+     * 注册客户端用户
+     * @param model
+     * @param personUser
+     * @return
+     */
     @RequestMapping(value = "/register",method= RequestMethod.POST)
     public  String regester(Map<String,Object> model, PersonUser personUser){
         model.put("user",personUserService.insert(personUser));
