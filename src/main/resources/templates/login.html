@@ -1,14 +1,64 @@
 <!DOCTYPE HTML>
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
 <head>
+    <meta charset="UTF-8"/>
+    <meta http-equiv="x-ua-compatible" content="IE=edge"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <title>登录</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <!--使用@{}引用web静态资源，这在jsp下是极易出错的-->
+    <link th:src="@{js/bootstrap-3.3.7/css/bootstrap.min.css}" rel="stylesheet"/>
+    <link th:src="@{js/bootstrap-3.3.7/css/bootstrap-theme.min.css}" rel="stylesheet"/>
+    <!--[if lt IE 9]>
+    <script th:src="@{js/html5shiv/html5shiv.js}"></script>
+    <script th:src="@{js/respond.min.js}"></script>
+    <![ENDIF]-->
 </head>
 <body>欢迎来到日报系统天天
-<form th:action="@{/login}" th:method="post">
-    <input type="text" name="account"/>
-    <input type="password" name="password"/>
-    <input type="submit"/>
+<form th:method="post">
+    <input type="text" name="account" id="account"/>
+    <input type="password" name="password" id="password"/>
+    <input type="button" onclick="login(this)" th:value="登录"/>
 </form>
+<script th:src="@{js/jquery-1.12.4.min.js}" type="text/javascript"></script>
+<script th:src="@{js/bootstrap-3.3.7/js/bootstrap.min.js}" type="text/javascript"></script>
+<script>
+ function login(){
+    if(this.account==""){
+        console.log("账户不能为空");
+    }else if(this.password==""){
+        console.log("密码不能为空");
+    }else{
+        $.ajax({
+            url:"login",
+            type:"post",
+            data:{
+                account:document.all("account").value,
+                password:document.all("password").value
+            },
+            success:function (res) {
+                console.log("res："+res);
+                console.log("res.data："+res.data);
+                if(res){
+                    if(res.code==477){
+                        console.log("477:用户或密码错误");
+                    }else{
+                        console.log("res.code："+res.code);
+                        sessionStorage.jwt=res;
+
+                        //转到主页
+                        window.location.href="index";
+                    }
+                }else{
+                    console.log("账户或密码错误");
+                }
+            },
+            error:function () {
+                console.log("账户或密码错误");
+            }
+        })
+    }
+ }
+</script>
 </body>
 </html>

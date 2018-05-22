@@ -3,12 +3,15 @@ package com.yun.daily.system.controller;
 import com.yun.daily.personUser.domain.PersonUser;
 import com.yun.daily.personUser.service.PersonUserService;
 import com.yun.daily.system.service.AuthService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.annotation.Resource;
 import java.util.Map;
@@ -23,9 +26,10 @@ public class AuthController {
     @Autowired
     private PersonUserService personUserService;
 
-
     @Autowired
     private AuthService authService;
+
+    private Logger logger = LoggerFactory.getLogger(AuthController.class);
 
     @RequestMapping(value = {"/login","/"})
     public  String sigin(Map<String,Object> model){
@@ -50,9 +54,13 @@ public class AuthController {
      * @throws AuthenticationException
      */
     @RequestMapping(value = "/login",method= RequestMethod.POST)
+    @ResponseBody
     public  ResponseEntity<?> login(Map<String,Object> model, PersonUser personUser) throws AuthenticationException{
+        logger.info("AuthController.login--Parameter:"+personUser);
         final String token = authService.login(personUser.getAccount(),personUser.getPassword());
+        logger.info("AuthController.login--result:"+token);
         ResponseEntity<?> result = ResponseEntity.ok(token);
+        logger.info("AuthController.login--ResponseEntity.ok(token):"+result);
         return result;
     }
 

@@ -17,7 +17,7 @@ import java.io.IOException;
 
 public class SecureAuthenticationTokenFilter extends OncePerRequestFilter{
     private final String HEADER="Authorization";
-    private final String TOKENHEAN = "Bearer";
+    private final String TOKENHEAN = "Bearer ";
     @Autowired
     private UserDetailsService userDetailsService;
     @Autowired
