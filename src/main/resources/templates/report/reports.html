@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<!--通过http://www.thymeleaf.org命名空间，将镜头页面转换为动态的视图，需要进行动态处理的元素将使用“th:”为前缀-->
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <meta http-equiv="x-ua-compatible" content="IE=edge"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1"/>
+    <!--上面3个meta标签必须是head的头三个标签，其余的head内标签在此3个标签之后-->
+    <title>日报系统首页</title>
+    <!--使用@{}引用web静态资源，这在jsp下是极易出错的-->
+    <link th:href="@{/js/bootstrap-3.3.7/css/bootstrap.min.css}" rel="stylesheet"/>
+    <link th:href="@{/js/bootstrap-3.3.7/css/bootstrap-theme.min.css}" rel="stylesheet"/>
+    <link th:href="@{/js/bootstrap-datetimepick/css/bootstrap-datetimepicker.min.css}" rel="stylesheet"/>
+
+    <!--HTML5 shiv and respond.js 用来让ie8支持html5元素和媒体查询.
+    在页面中调用html5.js文件必须添加在页面的head元素内，因为IE浏览器必须在元素解析前知道这个元素，
+    所以这个js文件不能在页面底部调用-->
+
+    <!--[if lt IE 9]>
+    <script th:src="@{/js/html5shiv/html5shiv.js}"></script>
+    <script th:src="@{/js/respond.min.js}"></script>
+    <![ENDIF]-->
+</head>
+<body>
+<div class="container">
+    <div class="row clearfix">
+        <div class="col-md-12 column">
+            <ul class="nav nav-tabs">
+                <li >
+                    <a th:href="@{/index}">首页</a>
+                </li>
+                <li class="active">
+                    <a th:href="@{/reports}">日报</a>
+                </li>
+                <li class="disabled">
+                    <a th:href="@{/myReports}">我的日报</a>
+                </li>
+                <li class="dropdown pull-right">
+                    <a href="#" data-toggle="dropdown" class="dropdown-toggle">账号<strong class="caret"></strong></a>
+                    <ul class="dropdown-menu">
+                        <li>
+                            <a href="#">个人信息</a>
+                        </li>
+                        <li>
+                            <a href="#">待定</a>
+                        </li>
+                        <li>
+                            <a href="#">待定</a>
+                        </li>
+                        <li class="divider">
+                        </li>
+                        <li>
+                            <a href="#">退出</a>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+            <form class="form-horizontal" role="form">
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">类别</label>
+                    <div class="col-sm-10">
+                        <select class="form-control">
+                            <option value="1">日报</option>
+                            <option value="2">周报</option>
+                            <option value="3">月报</option>
+                            <option value="4">年报</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="date" class="col-sm-2 control-label">日期</label>
+                    <div class="col-sm-10" >
+                        <input class="span2" id="date" size="16" type="text" data-date-format="yyyy-mm-dd"/>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="week" class="col-sm-2 control-label">周</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" id="week" />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="month" class="col-sm-2 control-label">月份</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" id="month" />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="year" class="col-sm-2 control-label">年份</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" id="year" />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="account" class="col-sm-2 control-label">用户账户</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" id="account" />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="name" class="col-sm-2 control-label">用户姓名</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" id="name" />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="title" class="col-sm-2 control-label">标题</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" id="title" />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="content" class="col-sm-2 control-label">内容</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" id="content" />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="summary" class="col-sm-2 control-label">小结</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" id="summary" />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-sm-offset-2 col-sm-10">
+                        <button type="submit" class="btn btn-default">查询</button>
+                    </div>
+                </div>
+            </form>
+            <table class="table" id="report_table">
+            </table>
+        </div>
+    </div>
+</div>
+<script th:src="@{/js/jquery-1.12.4.min.js}" type="text/javascript"></script>
+<script th:src="@{/js/bootstrap-3.3.7/js/bootstrap.min.js}" type="text/javascript"></script>
+<script th:src="@{/js/bootstrap-datetimepick/js/bootstrap-datetimepicker.min.js}" type="text/javascript"></script>
+<script th:src="@{/js/bootstrap-datetimepick/js/locales/bootstrap-datetimepicker.zh-CN.js}" type="text/javascript"></script>
+<!--通过th:inline="javascript"添加到script标签，这样JavaScript代码即可访问model中的属性-->
+<script th:inline="javascript">
+$(function(){
+    var now = new Date();
+    // $('#date').datetimepicker('setStartDate', );
+    $("#date").datetimepicker({
+        format: "yyyy-mm-dd",
+        autoclose: true,
+        todayBtn: true,
+        pickerPosition: "bottom-left",
+        startDate:now.getFullYear()+"-"+(now.getMonth()+1)+"-"+now.getDate()
+    });
+ // init();
+});
+var $table;
+
+function init() {
+    //记录页面bootstrap-table全局变量$table，方便应用
+    var queryUrl = '/api/v1/report/selectByCondition';
+    $table = $('#report_table').bootstrapTable({
+        url: queryUrl,                      //请求后台的URL（*）
+        method: 'GET',                      //请求方式（*）
+        //toolbar: '#toolbar',              //工具按钮用哪个容器
+        striped: true,                      //是否显示行间隔色
+        cache: false,                       //是否使用缓存，默认为true，所以一般情况下需要设置一下这个属性（*）
+        pagination: true,                   //是否显示分页（*）
+        sortable: true,                     //是否启用排序
+        sortOrder: "asc",                   //排序方式
+        sidePagination: "server",           //分页方式：client客户端分页，server服务端分页（*）
+        pageNumber: 1,                      //初始化加载第一页，默认第一页,并记录
+        pageSize: rows,                     //每页的记录行数（*）
+        pageList: [10, 25, 50, 100],        //可供选择的每页的行数（*）
+        search: false,                      //是否显示表格搜索
+        strictSearch: true,
+        showColumns: true,                  //是否显示所有的列（选择显示的列）
+        showRefresh: true,                  //是否显示刷新按钮
+        minimumCountColumns: 2,             //最少允许的列数
+        clickToSelect: true,                //是否启用点击选中行
+        //height: 500,                      //行高，如果没有设置height属性，表格自动根据记录条数觉得表格高度
+        uniqueId: "reportId",                     //每一行的唯一标识，一般为主键列
+        showToggle: true,                   //是否显示详细视图和列表视图的切换按钮
+        cardView: false,                    //是否显示详细视图
+        detailView: false,                  //是否显示父子表
+        //得到查询的参数
+        queryParams : function (params) {
+            //这里的键的名字和控制器的变量名必须一致，这边改动，控制器也需要改成一样的
+            var temp = {
+                rows: params.limit,                         //页面大小
+                page: (params.offset / params.limit) + 1,   //页码
+                sort: params.sort,      //排序列名
+                sortOrder: params.order //排位命令（desc，asc）
+            };
+            return temp;
+        },
+        columns: [{
+            checkbox: true,
+            visible: true                  //是否显示复选框
+        }, {
+            field: 'title',
+            title: '标题',
+            sortable: true
+        }, {
+            field: 'content',
+            title: '内容',
+            sortable: true
+        }, {
+            field: 'summary',
+            title: '小结',
+            sortable: true
+        }, {
+            field: 'account',
+            title: '用户账号'
+        }, {
+            field: 'authorName',
+            title: '用户姓名'
+        }, {
+            field: 'createTime',
+            title: '创建日期',
+            sortable: true
+        }, {
+            field: 'updateTime',
+            title: '修改日期'
+        }, {
+            field:'reportId',
+            title: '操作',
+            width: 120,
+            align: 'center',
+            valign: 'middle',
+            formatter: actionFormatter
+        }],
+        onLoadSuccess: function () {
+        },
+        onLoadError: function () {
+            showTips("数据加载失败！");
+        },
+        onDblClickRow: function (row, $element) {
+            var id = row.ID;
+            EditViewById(id, 'view');
+        },
+    });
+}
+
+//操作栏的格式化
+function actionFormatter(value, row, index) {
+    var id = value;
+    var result = '';
+    result += '<a href="javascript:editViewById(1);" class="btn btn-xs blue" title="编辑"><span class="glyphicon glyphicon-pencil"></span></a>';
+    result += '<a href="javascript:deleteById(1);" class="btn btn-xs red" title="删除"><span class="glyphicon glyphicon-remove"></span></a>';
+
+    return result;
+}
+
+function editViewById(id) {
+    
+}
+
+function deleteById(id) {
+
+}
+</script>
+</body>
+</html>

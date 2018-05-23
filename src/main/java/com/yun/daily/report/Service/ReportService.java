@@ -11,12 +11,22 @@ import java.util.List;
 public class ReportService {
     @Autowired
     private ReportDao reportDao;
+
+    /**
+     * 根据id删除记录
+     * @param record
+     * @return
+     */
+    public int insert(Report record){
+        return reportDao.insert(record);
+    }
+
     /**
      * 根据id删除记录
      * @param reportId
      * @return
      */
-    int deleteById(Long reportId){
+    public int deleteById(Long reportId){
         return reportDao.deleteById(reportId);
     }
 
