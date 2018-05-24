@@ -24,7 +24,7 @@ public class ReportController {
     private Logger log = LoggerFactory.getLogger(PersonUserController.class);
 
     @RequestMapping("/reports")
-    public  String reports(Map<String,Object> model, Report report){
+    public  String reports(){
         return "report/reports";
     }
 
