@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.yun.daily.report.dao.ReportDao" >
+  <resultMap id="reportResultMap" type="com.yun.daily.report.domain.Report" >
+    <id column="report_id" property="reportId" jdbcType="BIGINT" />
+    <result column="account" property="account" jdbcType="VARCHAR" />
+    <result column="title" property="title" jdbcType="VARCHAR" />
+    <result column="content" property="content" jdbcType="VARBINARY" />
+    <result column="type" property="type" jdbcType="VARCHAR" />
+    <result column="type_value" property="typeValue" jdbcType="VARCHAR" />
+    <result column="summary" property="summary" jdbcType="VARBINARY" />
+    <result column="plan" property="plan" jdbcType="VARBINARY" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+    <result column="name" property="authorName" />
+  </resultMap>
+  <sql id="columns" >
+    report_id, account, title,content, type, type_value, summary, plan,create_time, update_time
+  </sql>
+
+  <sql id="reportWhereCondition">
+    <where>
+      A.account=B.account
+      <if test=" reportId != null and reportId != '' and reportId != 'null' ">
+        <![CDATA[ AND A.report_id = #{reportId} ]]>
+      </if>
+      <if test=" account != null and account != '' and account != 'null' ">
+        <![CDATA[ AND A.account = #{account} ]]>
+      </if>
+      <if test=" title != null and title != '' and title != 'null' ">
+        <![CDATA[ AND A.title = #{title} ]]>
+      </if>
+      <if test=" content != null and content != '' and content != 'null' ">
+        <![CDATA[ AND A.content = #{content} ]]>
+      </if>
+      <if test=" type != null and type != '' and type != 'null' ">
+        <![CDATA[ AND A.type = #{type} ]]>
+      </if>
+      <if test=" typeValue != null and typeValue != '' and typeValue != 'null' ">
+        <![CDATA[ AND A.type_value = #{typeValue} ]]>
+      </if>
+      <if test=" summary != null and summary != '' and summary != 'null' ">
+        <![CDATA[ AND A.summary = #{summary} ]]>
+      </if>
+      <if test=" plan != null and plan != '' and plan != 'null' ">
+        <![CDATA[ AND A.plan = #{plan} ]]>
+      </if>
+      <if test=" createTime != null and createTime != '' and createTime != 'null' ">
+        <![CDATA[ AND A.create_time = #{createTime} ]]>
+      </if>
+      <if test=" updateTime != null and updateTime != '' and updateTime != 'null' ">
+        <![CDATA[ AND A.update_time = #{updateTime} ]]>
+      </if>
+    </where>
+  </sql>
+
+  <insert id="insert" parameterType="com.yun.daily.report.domain.Report" >
+    <selectKey resultType="String" keyProperty="reportId" order="AFTER">
+      SELECT
+      LAST_INSERT_ID()
+    </selectKey>
+    insert into td_report ( account, title,
+    type, type_value, create_time,
+    update_time, content, summary,
+    plan)
+    values (jdbcType=BIGINT}, #{account,jdbcType=VARCHAR}, #{title,jdbcType=VARCHAR},
+    #{type,jdbcType=VARCHAR}, #{typeValue,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP},
+    #{updateTime,jdbcType=TIMESTAMP}, #{content,jdbcType=VARBINARY}, #{summary,jdbcType=VARBINARY},
+    #{plan,jdbcType=VARBINARY})
+  </insert>
+
+  <delete id="deleteById" parameterType="java.lang.Long" >
+    delete from td_report
+    where report_id = #{reportId}
+  </delete>
+
+  <update id="update" parameterType="com.yun.daily.report.domain.Report" >
+    update td_report
+    <set >
+      <if test="account != null" >
+        account = #{account,jdbcType=VARCHAR},
+      </if>
+      <if test="title != null" >
+        title = #{title,jdbcType=VARCHAR},
+      </if>
+      <if test="type != null" >
+        type = #{type,jdbcType=VARCHAR},
+      </if>
+      <if test="typeValue != null" >
+        type_value = #{typeValue,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null" >
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null" >
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="content != null" >
+        content = #{content,jdbcType=VARBINARY},
+      </if>
+      <if test="summary != null" >
+        summary = #{summary,jdbcType=VARBINARY},
+      </if>
+      <if test="plan != null" >
+        plan = #{plan,jdbcType=VARBINARY},
+      </if>
+    </set>
+    where report_id = #{reportId}
+  </update>
+
+  <select id="selectById" resultMap="reportResultMap" parameterType="java.lang.Long" >
+    select
+    <include refid="columns" />
+    from td_report
+    where report_id = #{reportId}
+  </select>
+
+  <select id="selectByCondition" resultMap="reportResultMap" parameterType="com.yun.daily.report.domain.Report" >
+    <![CDATA[ SELECT A.*,B.name from td_report A,td_person_user B ]]>
+    <include refid="reportWhereCondition" />
+  </select>
+
+
+
+
+
+</mapper>
