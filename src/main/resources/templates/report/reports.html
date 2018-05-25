@@ -146,7 +146,7 @@
 <script th:src="@{/js/bootstrap-datetimepick/js/locales/bootstrap-datetimepicker.zh-CN.js}" charset="UTF-8"></script>
 <script th:src="@{/js/My97DatePicker/WdatePicker.js}"></script>
 <!--通过th:inline="javascript"添加到script标签，这样JavaScript代码即可访问model中的属性-->
-<script th:inline="javascript">
+<script type="text/javascript">
 $(function(){
     var now = new Date();
     var month = now.getMonth()+1;
@@ -176,9 +176,11 @@ var $table;
 function init() {
     //记录页面bootstrap-table全局变量$table，方便应用
     var queryUrl = '/api/v1/report/selectByCondition';
-    $table = $('#report_table').bootstrapTable({
+    $table = $('#report_table').bootstrapTable('destroy').bootstrapTable({
         url: queryUrl,                      //请求后台的URL（*）
-        method: 'GET',                      //请求方式（*）
+        method: 'post',                      //请求方式（*）
+        contentType: "application/x-www-form-urlencoded",
+        dataType:'json',
         //toolbar: '#toolbar',              //工具按钮用哪个容器
         striped: true,                      //是否显示行间隔色
         cache: false,                       //是否使用缓存，默认为true，所以一般情况下需要设置一下这个属性（*）
@@ -191,7 +193,7 @@ function init() {
         pageList: [10, 25, 50, 100],        //可供选择的每页的行数（*）
         search: false,                      //是否显示表格搜索
         strictSearch: true,
-        showColumns: true,                  //是否显示所有的列（选择显示的列）
+        showColumns: false,                  //是否显示所有的列（选择显示的列）
         showRefresh: true,                  //是否显示刷新按钮
         minimumCountColumns: 2,             //最少允许的列数
         clickToSelect: true,                //是否启用点击选中行
@@ -200,13 +202,20 @@ function init() {
         showToggle: true,                   //是否显示详细视图和列表视图的切换按钮
         cardView: false,                    //是否显示详细视图
         detailView: false,                  //是否显示父子表
-        // editable:true,//开启编辑模式
+        locale:'zh-CN',//中文支持
+        //按需求设置不同的样式：5个取值代表5中颜色['active', 'success', 'info', 'warning', 'danger'];
+        rowStyle: function (row, index) {
+            var style = "";
+            if (row.reportId=="1") {style='success';}
+            return { classes: style }
+        },
+        queryParamsType:'',
         //得到查询的参数
         queryParams : function (params) {
             //这里的键的名字和控制器的变量名必须一致，这边改动，控制器也需要改成一样的
             var temp = {
-                rows: params.limit,                         //页面大小
-                page: (params.offset / params.limit) + 1,   //页码
+                pageNumber: params.pageNumber,
+                pageSize: params.pageSize,
                 sort: params.sort,      //排序列名
                 sortOrder: params.order, //排位命令（desc，asc）
                 account:$("#account").val(),
@@ -237,10 +246,40 @@ function init() {
         }, {
             field: 'summary',
             title: '小结',
-            sortable: true
-        }, {
+            sortable: true,
+            editable: {
+                type: 'text',
+                mode: "inline",
+                title: '小结',
+                validate: function (v) {
+
+                }
+            }
+        },{
+            field: 'plan',
+            title: '计划',
+            sortable: true,
+            editable: {
+                type: 'text',
+                mode: "inline",
+                title: '计划',
+                validate: function (v) {
+
+                }
+            }
+        },{
+            field: 'type',
+            title: '类型',
+            sortable: true,
+            visible:false
+        },{
+            field: 'typeValue',
+            title: '类型值',
+            sortable: true,
+            visible:false
+        },{
             field: 'account',
-                title: '用户账号'
+            title: '用户账号'
         }, {
             field: 'authorName',
             title: '用户姓名'
@@ -252,7 +291,7 @@ function init() {
             field: 'updateTime',
             title: '修改日期'
         }, {
-            field:'op',
+            field:'reportId',
             title: '操作',
             width: 120,
             align: 'center',
@@ -288,32 +327,113 @@ function init() {
 }
 
 function insertRow() {
-    var rowData = {
-        reportId: '0',
-        title: '标题',
-        content: '内容',
-        summary: '小结'
-    };
-    $table.bootstrapTable('insertRow', {index: 1, row:rowData });
-    console.log(1)
+    var length = $(".glyphicon-ok").length;
+    var type=$("#type").val();
+    var typeValue='';
+    if(length==0){
+        var rowData = {
+            reportId: '0',
+            title: '标题',
+            content: '内容',
+            summary:'小结',
+            plan:'计划',
+            type:type,
+            typeValue:typeValue,
+            reportId:0
+        };
+        $table.bootstrapTable('insertRow', {index: 0, row:rowData });
+    }else{
+        console.log("您还有没保存的数据，不能新增");
+    }
 }
 
 //操作栏的格式化
 function actionFormatter(value, row, index) {
     var id = value;
     var result = '';
-    result += '<a href="javascript:editViewById(1);" class="btn btn-xs blue" title="编辑"><span class="glyphicon glyphicon-pencil"></span></a>';
-    result += '<a href="javascript:deleteById(1);" class="btn btn-xs red" title="删除"><span class="glyphicon glyphicon-remove"></span></a>';
 
+    console.log('value='+value+",row="+JSON.stringify(row)+',index='+index+'--reportid-->'+row.reportId);
+    if(id==0){//新增一行
+        result += '<a href="javascript:void(0)" class="btn btn-xs blue" onclick="saveDataById(\''+id+'\')" title="保存"><span class="glyphicon glyphicon-ok"></span></a>';
+        result += '<a href="javascript:void(0)" class="btn btn-xs blue" onclick="deleteById(\''+id+'\')" title="删除"><span class="glyphicon glyphicon-remove"></span></a>';
+    }else{//对已存在的记录进行的操作
+        result += '<a href="javascript:void(0)" class="btn btn-xs blue" onclick="saveDataById(\''+id+'\')" title="编辑"><span class="glyphicon glyphicon-pencil"></span></a>';
+        result += '<a href="javascript:void(0)" class="btn btn-xs blue" onclick="deleteById(\''+id+'\')" title="删除"><span class="glyphicon glyphicon-remove"></span></a>';
+    }
     return result;
 }
 
-function editViewById(id) {
-    
+function saveDataById(id) {
+    var report = $table.bootstrapTable('getRowByUniqueId', id);
+    console.log('saveDataById:id-->'+id+",row-->"+',report-->'+JSON.stringify(report));
+    var url="/api/v1/report/update";
+    if(id==0) url = "/api/v1/report/save";
+    //ajax请求服务器
+    $.ajax({
+        url:url,
+        type:"post",
+        data:report,
+        success:function (res) {
+            if(res){
+                if(res.code>0){
+                    console.log("保存成功");
+                    $table.bootstrapTable('refresh', {
+                        url: '/api/v1/report/selectByCondition'
+                    });
+
+                    // $("#table_list").bootstrapTable('refresh');
+                    // $('#table_list').bootstrapTable('selectPage', 1);
+                }else{
+                    console.log("保存失败");
+                }
+            }else{
+                console.log("出错");
+            }
+        },
+        error:function () {
+            console.log("请求错误");
+        }
+    })
 }
-
+function editViewById(id) {
+    console.log('editViewById:id-->'+id);
+}
 function deleteById(id) {
+    console.log('deleteById:id-->'+id);
+    $table.bootstrapTable('remove', {
+        field: "reportId",
+        values: [parseInt(id)]
+    });
+    if(id!=0){
+        //ajax请求服务器
+        $.ajax({
+            url:"/api/v1/report/deleteByID",
+            type:"post",
+            data:{
+                reportId:id
+            },
+            success:function (res) {
+                if(res){
+                    if(res.code>0){
+                        console.log("删除成功");
+                        $table.bootstrapTable('refresh', {
+                            url: '/api/v1/report/selectByCondition'
+                        });
 
+                        // $("#table_list").bootstrapTable('refresh');
+                        // $('#table_list').bootstrapTable('selectPage', 1);
+                    }else{
+                        console.log("删除失败");
+                    }
+                }else{
+                    console.log("出错");
+                }
+            },
+            error:function () {
+                console.log("请求错误");
+            }
+        })
+    }
 }
 </script>
 </body>

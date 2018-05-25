@@ -13,6 +13,8 @@ import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -30,16 +32,20 @@ public class ReportController {
 
     @RequestMapping("/save")
     @ResponseBody
-    public  String save(Map<String,Object> model, Report report){
+    public  String save(Report report){
+        report.setAccount("暂没设置");
+        report.setAuthorName("暂没设置");
+        report.setCreateTime(new Date());
+        report.setUpdateTime(new Date());
         int result = reportService.insert(report);
         return "reports";
     }
 
     @RequestMapping("/deleteByID")
     @ResponseBody
-    public  String deleteByID(Map<String,Object> model, Long reportId){
+    public  int deleteByID(Map<String,Object> model, Long reportId){
         int result = reportService.deleteById(reportId);
-        return "reports";
+        return result;
     }
 
     @RequestMapping("/update")
@@ -57,9 +63,14 @@ public class ReportController {
 
     @RequestMapping("/selectByCondition")
     @ResponseBody
-    public  List<Report> selectByCondition(Report report){
-        List<Report> reports = reportService.selectByCondition(report);
-        return reports;
+    public  Map<String,Object> selectByCondition(int pageSize,int pageNumber,Report report){
+        /*所需参数*/
+        Map<String, Object> param=new HashMap<String, Object>();
+        int a=(pageNumber-1)*pageSize;
+        int b=pageSize;
+        param.put("a", a);
+        param.put("b", b);
+        return reportService.selectByCondition(report);
     }
 
 }

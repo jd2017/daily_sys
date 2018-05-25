@@ -63,7 +63,7 @@
     type, type_value, create_time,
     update_time, content, summary,
     plan)
-    values (jdbcType=BIGINT}, #{account,jdbcType=VARCHAR}, #{title,jdbcType=VARCHAR},
+    values (#{account,jdbcType=VARCHAR}, #{title,jdbcType=VARCHAR},
     #{type,jdbcType=VARCHAR}, #{typeValue,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP},
     #{updateTime,jdbcType=TIMESTAMP}, #{content,jdbcType=VARBINARY}, #{summary,jdbcType=VARBINARY},
     #{plan,jdbcType=VARBINARY})

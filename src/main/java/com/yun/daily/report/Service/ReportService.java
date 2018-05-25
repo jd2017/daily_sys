@@ -5,7 +5,9 @@ import com.yun.daily.report.domain.Report;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class ReportService {
@@ -53,7 +55,12 @@ public class ReportService {
      * @param report
      * @return
      */
-    public List<Report> selectByCondition(Report report){
-        return reportDao.selectByCondition(report);
+    public Map<String,Object> selectByCondition(Report report){
+        Map<String,Object> result = new HashMap<String,Object>();
+        int total=reportDao.selectByCondition(report).size();
+        List<Report> rows=reportDao.selectByCondition(report);//应该加上分页参数
+        result.put("total",total);
+        result.put("rows",rows);
+        return result;
     }
 }
