@@ -43,16 +43,16 @@ public class ReportController {
 
     @RequestMapping("/deleteByID")
     @ResponseBody
-    public  int deleteByID(Map<String,Object> model, Long reportId){
+    public  int deleteByID(Long reportId){
         int result = reportService.deleteById(reportId);
         return result;
     }
 
     @RequestMapping("/update")
     @ResponseBody
-    public  String update(Map<String,Object> model, Report report){
+    public  int update(Report report){
         int result = reportService.update(report);
-        return "";
+        return result;
     }
 
     @RequestMapping("/selectById")

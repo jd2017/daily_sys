@@ -357,7 +357,7 @@ function actionFormatter(value, row, index) {
         result += '<a href="javascript:void(0)" class="btn btn-xs blue" onclick="saveDataById(\''+id+'\')" title="保存"><span class="glyphicon glyphicon-ok"></span></a>';
         result += '<a href="javascript:void(0)" class="btn btn-xs blue" onclick="deleteById(\''+id+'\')" title="删除"><span class="glyphicon glyphicon-remove"></span></a>';
     }else{//对已存在的记录进行的操作
-        result += '<a href="javascript:void(0)" class="btn btn-xs blue" onclick="saveDataById(\''+id+'\')" title="编辑"><span class="glyphicon glyphicon-pencil"></span></a>';
+        result += '<a href="javascript:void(0)" class="btn btn-xs blue" onclick="editViewById(\''+id+'\',this)" title="编辑"><span class="glyphicon glyphicon-pencil"></span></a>';
         result += '<a href="javascript:void(0)" class="btn btn-xs blue" onclick="deleteById(\''+id+'\')" title="删除"><span class="glyphicon glyphicon-remove"></span></a>';
     }
     return result;
@@ -368,6 +368,7 @@ function saveDataById(id) {
     console.log('saveDataById:id-->'+id+",row-->"+',report-->'+JSON.stringify(report));
     var url="/api/v1/report/update";
     if(id==0) url = "/api/v1/report/save";
+    else url='/api/v1/report/update';
     //ajax请求服务器
     $.ajax({
         url:url,
@@ -395,8 +396,11 @@ function saveDataById(id) {
         }
     })
 }
-function editViewById(id) {
-    console.log('editViewById:id-->'+id);
+function editViewById(id,obj) {
+    console.log('editViewById:id-->'+id+',obj-->'+obj);
+    $(obj).attr('onclick','saveDataById('+id+')');
+    $(obj).attr('title',' 保存');
+    $(obj).children(":first").attr('class','glyphicon glyphicon-ok');
 }
 function deleteById(id) {
     console.log('deleteById:id-->'+id);
@@ -414,7 +418,7 @@ function deleteById(id) {
             },
             success:function (res) {
                 if(res){
-                    if(res.code>0){
+                    if(res>0){
                         console.log("删除成功");
                         $table.bootstrapTable('refresh', {
                             url: '/api/v1/report/selectByCondition'
