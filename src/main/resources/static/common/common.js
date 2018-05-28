@@ -1,3 +1,5 @@
-function dateSubStr(dateStr){
-    return dateStr.substr(0,dateStr.lastIndexOf(":"));
+function dateSubStr(value, row, index){
+    if(value!="" && value!=null){
+        return value.substr(0,value.lastIndexOf(":"));
+    }
 }
