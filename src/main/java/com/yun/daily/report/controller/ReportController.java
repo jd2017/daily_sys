@@ -1,5 +1,6 @@
 package com.yun.daily.report.controller;
 
+import com.yun.common.Page;
 import com.yun.daily.personUser.controller.PersonUserController;
 import com.yun.daily.report.Service.ReportService;
 import com.yun.daily.report.domain.Report;
@@ -13,6 +14,8 @@ import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -24,7 +27,7 @@ public class ReportController {
     @Autowired
     private ReportService reportService;
     private Logger log = LoggerFactory.getLogger(PersonUserController.class);
-
+    private DateTimeFormatter df = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
     @RequestMapping("/reports")
     public  String reports(){
         return "report/reports";
@@ -35,8 +38,9 @@ public class ReportController {
     public  String save(Report report){
         report.setAccount("暂没设置");
         report.setAuthorName("暂没设置");
-        report.setCreateTime(new Date());
-        report.setUpdateTime(new Date());
+        String nowStr = df.format(LocalDateTime.now());
+        report.setCreateTime(nowStr);
+        report.setUpdateTime(nowStr);
         int result = reportService.insert(report);
         return "reports";
     }
@@ -63,14 +67,8 @@ public class ReportController {
 
     @RequestMapping("/selectByCondition")
     @ResponseBody
-    public  Map<String,Object> selectByCondition(int pageSize,int pageNumber,Report report){
-        /*所需参数*/
-        Map<String, Object> param=new HashMap<String, Object>();
-        int a=(pageNumber-1)*pageSize;
-        int b=pageSize;
-        param.put("a", a);
-        param.put("b", b);
-        return reportService.selectByCondition(report);
+    public Page selectByCondition(int pageNumber, int pageSize, Report report){
+        return reportService.selectByCondition(pageNumber,pageSize,report);
     }
 
 }

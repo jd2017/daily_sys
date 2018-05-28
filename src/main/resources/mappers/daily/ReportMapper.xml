@@ -2,14 +2,14 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.yun.daily.report.dao.ReportDao" >
   <resultMap id="reportResultMap" type="com.yun.daily.report.domain.Report" >
-    <id column="report_id" property="reportId" jdbcType="BIGINT" />
+    <id column="report_id" property="reportId" />
     <result column="account" property="account" jdbcType="VARCHAR" />
     <result column="title" property="title" jdbcType="VARCHAR" />
-    <result column="content" property="content" jdbcType="VARBINARY" />
+    <result column="content" property="content" jdbcType="VARCHAR" />
     <result column="type" property="type" jdbcType="VARCHAR" />
     <result column="type_value" property="typeValue" jdbcType="VARCHAR" />
-    <result column="summary" property="summary" jdbcType="VARBINARY" />
-    <result column="plan" property="plan" jdbcType="VARBINARY" />
+    <result column="summary" property="summary" jdbcType="VARCHAR" />
+    <result column="plan" property="plan" jdbcType="VARCHAR" />
     <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
     <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
     <result column="name" property="authorName" />
@@ -20,7 +20,6 @@
 
   <sql id="reportWhereCondition">
     <where>
-      A.account=B.account
       <if test=" reportId != null and reportId != '' and reportId != 'null' ">
         <![CDATA[ AND A.report_id = #{reportId} ]]>
       </if>
@@ -55,7 +54,7 @@
   </sql>
 
   <insert id="insert" parameterType="com.yun.daily.report.domain.Report" >
-    <selectKey resultType="String" keyProperty="reportId" order="AFTER">
+    <selectKey resultType="Long" keyProperty="reportId" order="AFTER">
       SELECT
       LAST_INSERT_ID()
     </selectKey>
@@ -65,8 +64,8 @@
     plan)
     values (#{account,jdbcType=VARCHAR}, #{title,jdbcType=VARCHAR},
     #{type,jdbcType=VARCHAR}, #{typeValue,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP},
-    #{updateTime,jdbcType=TIMESTAMP}, #{content,jdbcType=VARBINARY}, #{summary,jdbcType=VARBINARY},
-    #{plan,jdbcType=VARBINARY})
+    #{updateTime,jdbcType=TIMESTAMP}, #{content,jdbcType=VARCHAR}, #{summary,jdbcType=VARCHAR},
+    #{plan,jdbcType=VARCHAR})
   </insert>
 
   <delete id="deleteById" parameterType="java.lang.Long" >
@@ -96,13 +95,13 @@
         update_time = #{updateTime,jdbcType=TIMESTAMP},
       </if>
       <if test="content != null" >
-        content = #{content,jdbcType=VARBINARY},
+        content = #{content,jdbcType=VARCHAR},
       </if>
       <if test="summary != null" >
-        summary = #{summary,jdbcType=VARBINARY},
+        summary = #{summary,jdbcType=VARCHAR},
       </if>
       <if test="plan != null" >
-        plan = #{plan,jdbcType=VARBINARY},
+        plan = #{plan,jdbcType=VARCHAR},
       </if>
     </set>
     where report_id = #{reportId}
@@ -115,9 +114,18 @@
     where report_id = #{reportId}
   </select>
 
-  <select id="selectByCondition" resultMap="reportResultMap" parameterType="com.yun.daily.report.domain.Report" >
-    <![CDATA[ SELECT A.*,B.name from td_report A,td_person_user B ]]>
+  <select id="selectByCondition" resultMap="reportResultMap" parameterType="java.util.List" >
+    <![CDATA[ SELECT A.*,B.name from td_report A,td_person_user B  WHERE A.account=B.account AND  A.report_id IN  ]]>
+    <foreach collection="list" item="id" index="index" open="(" close=")" separator="," >
+     #{id}
+    </foreach>
+
+  </select>
+
+  <select id="selectIdsByCondition" resultType="java.lang.Long" parameterType="java.util.Map" >
+    <![CDATA[ select report_id from td_report ]]>
     <include refid="reportWhereCondition" />
+    <![CDATA[ order by type_value desc limit #{first},#{pageSize}]]>
   </select>
 
 

@@ -4,6 +4,7 @@ import com.yun.daily.report.domain.Report;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
+import java.util.Map;
 
 @Mapper
 public interface ReportDao {
@@ -38,8 +39,15 @@ public interface ReportDao {
 
     /**
      * 模糊查询
-     * @param report
+     * @param reportIds
      * @return
      */
-    List<Report> selectByCondition(Report report);
+    List<Report> selectByCondition(List<Long> ids);
+
+    /**
+     * 模糊查询
+     * @param param
+     * @return
+     */
+    List<Long> selectIdsByCondition(Map<String, Object> param);
 }

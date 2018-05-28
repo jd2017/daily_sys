@@ -61,8 +61,8 @@
                 <div class="form-group">
                     <label class="col-sm-2 control-label">类别</label>
                     <div class="col-sm-10">
-                        <select class="form-control">
-                            <option value="1">日报</option>
+                        <select class="form-control" id="type">
+                            <option value="1" selected="selected">日报</option>
                             <option value="2">周报</option>
                             <option value="3">月报</option>
                             <option value="4">年报</option>
@@ -139,12 +139,13 @@
 <script th:src="@{/js/jquery-1.12.4.min.js}" type="text/javascript"></script>
 <script th:src="@{/js/bootstrap-3.3.7/js/bootstrap.min.js}" type="text/javascript"></script>
 <script th:src="@{/js/bootstrap-table/bootstrap-table.min.js}"></script>
-<script th:src="@{/js/bootstrap3-editable/js/bootstrap-editable.min.js}"></script>
+<script th:src="@{/js/bootstrap3-editable/js/bootstrap-editable-me.js}"></script>
 <script th:src="@{/js/bootstrap-table/extensions/editable/bootstrap-table-editable.min.js}"></script>
 <script th:src="@{/js/bootstrap-table/locale/bootstrap-table-zh-CN.js}"></script>
 <script th:src="@{/js/bootstrap-datetimepick/js/bootstrap-datetimepicker.min.js}" charset="UTF-8"></script>
 <script th:src="@{/js/bootstrap-datetimepick/js/locales/bootstrap-datetimepicker.zh-CN.js}" charset="UTF-8"></script>
 <script th:src="@{/js/My97DatePicker/WdatePicker.js}"></script>
+<script th:src="@{/common/common.js}"></script>
 <!--通过th:inline="javascript"添加到script标签，这样JavaScript代码即可访问model中的属性-->
 <script type="text/javascript">
 $(function(){
@@ -189,7 +190,7 @@ function init() {
         sortOrder: "asc",                   //排序方式
         sidePagination: "server",           //分页方式：client客户端分页，server服务端分页（*）
         pageNumber: 1,                      //初始化加载第一页，默认第一页,并记录
-        pageSize: 12,                     //每页的记录行数（*）
+        pageSize: 10,                     //每页的记录行数（*）
         pageList: [10, 25, 50, 100],        //可供选择的每页的行数（*）
         search: false,                      //是否显示表格搜索
         strictSearch: true,
@@ -286,10 +287,12 @@ function init() {
         }, {
             field: 'createTime',
             title: '创建日期',
-            sortable: true
+            sortable: true,
+            formatter:dateSubStr
         }, {
             field: 'updateTime',
-            title: '修改日期'
+            title: '修改日期',
+            formatter:dateSubStr
         }, {
             field:'reportId',
             title: '操作',
@@ -327,10 +330,10 @@ function init() {
 }
 
 function insertRow() {
-    var length = $(".glyphicon-ok").length;
+    console.log($table.bootstrapTable('getRowByUniqueId', 0))
     var type=$("#type").val();
     var typeValue='';
-    if(length==0){
+    if($table.bootstrapTable('getRowByUniqueId', 0)==null){
         var rowData = {
             reportId: '0',
             title: '标题',
@@ -352,14 +355,9 @@ function actionFormatter(value, row, index) {
     var id = value;
     var result = '';
 
-    console.log('value='+value+",row="+JSON.stringify(row)+',index='+index+'--reportid-->'+row.reportId);
-    if(id==0){//新增一行
-        result += '<a href="javascript:void(0)" class="btn btn-xs blue" onclick="saveDataById(\''+id+'\')" title="保存"><span class="glyphicon glyphicon-ok"></span></a>';
-        result += '<a href="javascript:void(0)" class="btn btn-xs blue" onclick="deleteById(\''+id+'\')" title="删除"><span class="glyphicon glyphicon-remove"></span></a>';
-    }else{//对已存在的记录进行的操作
-        result += '<a href="javascript:void(0)" class="btn btn-xs blue" onclick="editViewById(\''+id+'\',this)" title="编辑"><span class="glyphicon glyphicon-pencil"></span></a>';
-        result += '<a href="javascript:void(0)" class="btn btn-xs blue" onclick="deleteById(\''+id+'\')" title="删除"><span class="glyphicon glyphicon-remove"></span></a>';
-    }
+    console.log('actionFormatter:value='+value+",row="+JSON.stringify(row)+',index='+index+'--reportid-->'+row.reportId);
+    result += '<a href="javascript:void(0)" class="btn btn-xs blue" onclick="saveDataById(\''+id+'\')" title="保存"><span class="glyphicon glyphicon-ok"></span></a>';
+    result += '<a href="javascript:void(0)" class="btn btn-xs blue" onclick="deleteById(\''+id+'\')" title="删除"><span class="glyphicon glyphicon-remove"></span></a>';
     return result;
 }
 
@@ -374,6 +372,7 @@ function saveDataById(id) {
         url:url,
         type:"post",
         data:report,
+        header:{"Authorization":"Bearer "+sessionStorage.jwt},
         success:function (res) {
             if(res){
                 if(res.code>0){
@@ -396,12 +395,7 @@ function saveDataById(id) {
         }
     })
 }
-function editViewById(id,obj) {
-    console.log('editViewById:id-->'+id+',obj-->'+obj);
-    $(obj).attr('onclick','saveDataById('+id+')');
-    $(obj).attr('title',' 保存');
-    $(obj).children(":first").attr('class','glyphicon glyphicon-ok');
-}
+
 function deleteById(id) {
     console.log('deleteById:id-->'+id);
     $table.bootstrapTable('remove', {
@@ -416,6 +410,7 @@ function deleteById(id) {
             data:{
                 reportId:id
             },
+            header:{"Authorization":"Bearer "+sessionStorage.jwt},
             success:function (res) {
                 if(res){
                     if(res>0){

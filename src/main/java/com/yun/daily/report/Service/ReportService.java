@@ -1,5 +1,6 @@
 package com.yun.daily.report.Service;
 
+import com.yun.common.Page;
 import com.yun.daily.report.dao.ReportDao;
 import com.yun.daily.report.domain.Report;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -55,12 +56,19 @@ public class ReportService {
      * @param report
      * @return
      */
-    public Map<String,Object> selectByCondition(Report report){
-        Map<String,Object> result = new HashMap<String,Object>();
-        int total=reportDao.selectByCondition(report).size();
-        List<Report> rows=reportDao.selectByCondition(report);//应该加上分页参数
-        result.put("total",total);
-        result.put("rows",rows);
-        return result;
+    public Page selectByCondition(int pageNumber,int pageSize,Report report){
+        /*所需参数*/
+        Map<String, Object> param=new HashMap<String, Object>();
+        int first=(pageNumber-1)*pageSize;
+        param.put("first", first);
+        param.put("pageSize", pageSize);
+        param.put("report", report);
+        List<Long> ids = reportDao.selectIdsByCondition(param);
+        Page page = new Page();
+        int total=ids.size();
+        List<Report> rows=reportDao.selectByCondition(ids);//应该加上分页参数
+        page.setTotal(total);
+        page.setRows(rows);
+        return page;
     }
 }

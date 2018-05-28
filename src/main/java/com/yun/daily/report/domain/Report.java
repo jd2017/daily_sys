@@ -2,6 +2,7 @@ package com.yun.daily.report.domain;
 
 import lombok.Data;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 @Data
 public class Report {
@@ -21,9 +22,9 @@ public class Report {
 
     private String plan;
 
-    private Date createTime;
+    private String createTime;
 
-    private Date updateTime;
+    private String  updateTime;
 
 
     private String authorName;
