@@ -45,12 +45,10 @@ public class SecureAuthenticationTokenFilter extends OncePerRequestFilter{
         }else {
             if(request.getRequestURL().indexOf("/api/v1")>=0){
                 response.sendRedirect(request.getContextPath() + "/login");
+            }else{
+                chain.doFilter(request,response);
             }
         }
-
-        // 优先使用缓存的request
-//        chain.doFilter(wrappedSavedRequest == null ? request : wrappedSavedRequest,
-//                response);
 
     }
 }
