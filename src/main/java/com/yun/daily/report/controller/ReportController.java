@@ -11,6 +11,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -36,8 +38,8 @@ public class ReportController {
     @RequestMapping("/save")
     @ResponseBody
     public  String save(Report report){
-        report.setAccount("暂没设置");
-        report.setAuthorName("暂没设置");
+        UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        report.setAccount(userDetails.getUsername());
         String nowStr = df.format(LocalDateTime.now());
         report.setCreateTime(nowStr);
         report.setUpdateTime(nowStr);
@@ -55,6 +57,8 @@ public class ReportController {
     @RequestMapping("/update")
     @ResponseBody
     public  int update(Report report){
+        String nowStr = df.format(LocalDateTime.now());
+        report.setUpdateTime(nowStr);
         int result = reportService.update(report);
         return result;
     }

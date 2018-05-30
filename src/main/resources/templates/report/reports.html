@@ -138,8 +138,8 @@
 </div>
 <script th:src="@{/js/jquery-1.12.4.min.js}" type="text/javascript"></script>
 <script th:src="@{/js/bootstrap-3.3.7/js/bootstrap.min.js}" type="text/javascript"></script>
-<script th:src="@{/js/bootstrap-table/bootstrap-table.min.js}"></script>
-<script th:src="@{/js/bootstrap3-editable/js/bootstrap-editable-me.js}"></script>
+<script th:src="@{/js/bootstrap-table/bootstrap-table.js}"></script>
+<script th:src="@{/js/bootstrap3-editable/js/bootstrap-editable.js}"></script>
 <script th:src="@{/js/bootstrap-table/extensions/editable/bootstrap-table-editable.min.js}"></script>
 <script th:src="@{/js/bootstrap-table/locale/bootstrap-table-zh-CN.js}"></script>
 <script th:src="@{/js/bootstrap-datetimepick/js/bootstrap-datetimepicker.min.js}" charset="UTF-8"></script>
@@ -202,7 +202,9 @@ function init() {
         uniqueId: "reportId",                     //每一行的唯一标识，一般为主键列
         showToggle: false,                   //是否显示详细视图和列表视图的切换按钮
         cardView: false,                    //是否显示详细视图
-        detailView: false,                  //是否显示父子表
+        detailView: false,
+        emptytext:"",
+        //是否显示父子表
         locale:'zh-CN',//中文支持
         //按需求设置不同的样式：5个取值代表5中颜色['active', 'success', 'info', 'warning', 'danger'];
         rowStyle: function (row, index) {
@@ -226,8 +228,14 @@ function init() {
             return temp;
         },
         columns: [{
-            checkbox: true,
-            visible: true                  //是否显示复选框
+            field:"index",
+            title:"序号",
+            align:"center",
+            edit:false,
+            formatter:function(value, row, index){
+                console.log(JSON.stringify(row));
+                return (index+1); //返回行号
+            }
         }, {
             field: 'title',
             title: '标题',
@@ -237,6 +245,8 @@ function init() {
                 type: 'text',
                 mode: "inline",
                 title: '标题',
+                showbuttons:false,
+                onblur:"submit",
                 validate: function (v) {
                 }
             }
@@ -247,6 +257,8 @@ function init() {
                 type: 'text',
                 mode: "inline",
                 title: '内容',
+                showbuttons:false,
+                onblur:"submit",
                 validate: function (v) {
                 }
             }
@@ -258,6 +270,8 @@ function init() {
                 type: 'text',
                 mode: "inline",
                 title: '小结',
+                showbuttons:false,
+                onblur:"submit",
                 validate: function (v) {
 
                 }
@@ -270,6 +284,8 @@ function init() {
                 type: 'text',
                 mode: "inline",
                 title: '计划',
+                showbuttons:false,
+                onblur:"submit",
                 validate: function (v) {
 
                 }
@@ -278,12 +294,14 @@ function init() {
             field: 'type',
             title: '类型',
             sortable: true,
-            visible:false
+            visible:false,
+            formatter:typeFormatter
         },{
             field: 'typeValue',
             title: '类型值',
             sortable: true,
-            visible:false
+            visible:false,
+            formatter: typeVauleFormatter
         },{
             field: 'account',
             title: '用户账号'
@@ -300,12 +318,19 @@ function init() {
             title: '修改日期',
             formatter:dateSubStr
         }, {
-            field:'reportId',
+            field:'action',
             title: '操作',
             width: 120,
             align: 'center',
-            valign: 'middle',
+            edit:false,
             formatter: actionFormatter
+        }, {
+            field:"reportId",
+            title:"reportId",
+            align:"center",
+            edit:false,
+            visible:false,
+            searchable:false
         }],
         onLoadSuccess: function () {
             console.info("加载成功");
@@ -315,15 +340,28 @@ function init() {
         },
         onDblClickRow: function (row, $element) {
             var id = row.ID;
-            editViewById(id, 'view');
+            console.log("onDblClickRow");
+            // editViewById(id, 'view');
+        },
+        onEditableInit:function(){
+            console.log("onEditableInit");
+        },
+        onEditableShown:function(){
+            console.log("onEditableShown");
+        },
+        onEditableSave:function(field, row,oldValue,$el){
+            console.log("onEditableSave");
+            console.log(field+"--"+JSON.stringify(row)+"--"+oldValue+"--"+JSON.stringify($el));
+
         },
         onEditableHidden: function(field, row, $el, reason) { // 当编辑状态被隐藏时触发
+            console.log("onEditableHidden");
             if(reason === 'save') {
-                var $td = $el.closest('tr').children();
-                $td.eq(-1).html((row.price*row.number).toFixed(2));
-                $el.closest('tr').next().find('.editable').editable('show'); //编辑状态向下一行移动
+                // var $td = $el.closest('tr').children();
+                // $td.eq(-1).html((row.price*row.number).toFixed(2));
+                // $el.closest('tr').next().find('.editable').editable('show'); //编辑状态向下一行移动
             } else if(reason === 'nochange') {
-                $el.closest('tr').next().find('.editable').editable('show');
+                // $el.closest('tr').next().find('.editable').editable('show');
             }
         }
     });
@@ -341,7 +379,6 @@ function insertRow() {
     var typeValue='';
     if($table.bootstrapTable('getRowByUniqueId', 0)==null){
         var rowData = {
-            reportId: '0',
             title: '标题',
             content: '内容',
             summary:'小结',
@@ -356,11 +393,29 @@ function insertRow() {
     }
 }
 
+function typeFormatter(value, row, index){
+    if(value==0){
+        return $("#typeValue").val();
+    }else{
+        return value;
+    }
+
+}
+
+function typeVauleFormatter(value, row, index){
+    if(value==0){
+        return $("#typeValue").val();
+    }else{
+        return value;
+    }
+
+}
+
 //操作栏的格式化
 function actionFormatter(value, row, index) {
-    var id = value;
+    var id = row.reportId;
     var result = '';
-
+    console.log("actionFormatter");
     console.log('actionFormatter:value='+value+",row="+JSON.stringify(row)+',index='+index+'--reportid-->'+row.reportId);
     result += '<a href="javascript:void(0)" class="btn btn-xs blue" onclick="saveDataById(\''+id+'\')" title="保存"><span class="glyphicon glyphicon-ok"></span></a>';
     result += '<a href="javascript:void(0)" class="btn btn-xs blue" onclick="deleteById(\''+id+'\')" title="删除"><span class="glyphicon glyphicon-remove"></span></a>';

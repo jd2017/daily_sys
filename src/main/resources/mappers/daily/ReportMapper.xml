@@ -76,20 +76,8 @@
   <update id="update" parameterType="com.yun.daily.report.domain.Report" >
     update td_report
     <set >
-      <if test="account != null" >
-        account = #{account,jdbcType=VARCHAR},
-      </if>
       <if test="title != null" >
         title = #{title,jdbcType=VARCHAR},
-      </if>
-      <if test="type != null" >
-        type = #{type,jdbcType=VARCHAR},
-      </if>
-      <if test="typeValue != null" >
-        type_value = #{typeValue,jdbcType=VARCHAR},
-      </if>
-      <if test="createTime != null" >
-        create_time = #{createTime,jdbcType=TIMESTAMP},
       </if>
       <if test="updateTime != null" >
         update_time = #{updateTime,jdbcType=TIMESTAMP},
@@ -125,7 +113,10 @@
   <select id="selectIdsByCondition" resultType="java.lang.Long" parameterType="java.util.Map" >
     <![CDATA[ select report_id from td_report ]]>
     <include refid="reportWhereCondition" />
-    <![CDATA[ order by type_value desc limit #{first},#{pageSize}]]>
+    <![CDATA[ order by report_id desc ]]>
+    <if test="first != null and first != '' and first != 'null'" >
+      limit #{first},#{pageSize}
+    </if>
   </select>
 
 

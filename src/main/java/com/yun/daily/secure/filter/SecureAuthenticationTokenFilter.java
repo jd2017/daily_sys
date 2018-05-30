@@ -7,6 +7,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
+import org.springframework.security.web.savedrequest.RequestCache;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import javax.servlet.FilterChain;
@@ -25,6 +26,10 @@ public class SecureAuthenticationTokenFilter extends OncePerRequestFilter{
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws ServletException, IOException {
         String authHeather =request.getHeader(HEADER);
+        // request匹配，则取出，该操作同时会将缓存的request从session中删除
+//        HttpServletRequest wrappedSavedRequest = requestCache.getMatchingRequest(
+//                (HttpServletRequest) request, (HttpServletResponse) response);
+
         if(authHeather !=null &&authHeather.startsWith(TOKENHEAN)){
             final  String authToken = authHeather.substring(TOKENHEAN.length());
             String username = secureUtil.getUsernameFromToken(authToken);
@@ -36,7 +41,16 @@ public class SecureAuthenticationTokenFilter extends OncePerRequestFilter{
                     SecurityContextHolder.getContext().setAuthentication(authentication);
                 }
             }
+            chain.doFilter(request,response);
+        }else {
+            if(request.getRequestURL().indexOf("/api/v1")>=0){
+                response.sendRedirect(request.getContextPath() + "/login");
+            }
         }
-        chain.doFilter(request,response);
+
+        // 优先使用缓存的request
+//        chain.doFilter(wrappedSavedRequest == null ? request : wrappedSavedRequest,
+//                response);
+
     }
 }
