@@ -111,9 +111,9 @@
   </select>
 
   <select id="selectIdsByCondition" resultType="java.lang.Long" parameterType="java.util.Map" >
-    <![CDATA[ select report_id from td_report ]]>
+    <![CDATA[ select A.report_id from td_report A]]>
     <include refid="reportWhereCondition" />
-    <![CDATA[ order by report_id desc ]]>
+    <![CDATA[ order by A.report_id desc ]]>
     <if test="first != null and first != '' and first != 'null'" >
       limit #{first},#{pageSize}
     </if>
