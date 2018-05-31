@@ -63,7 +63,7 @@
         <div class="form-group">
             <div >
                 <div class="checkbox">
-                    <label><input type="checkbox" />Remember me</label>
+                    <label><input type="checkbox" name="remember-me" id="remember-me"/>Remember me</label>
                 </div>
             </div>
         </div>
@@ -111,7 +111,7 @@
                 console.log("res.data："+res.data);
                 if(res){
                     if(res.code==477){
-                        console.log("477:用户或密码错误");
+                        alert("用户或密码错误");
                     }else{
                         console.log("res.code："+res.code);
                         sessionStorage.jwt=res;

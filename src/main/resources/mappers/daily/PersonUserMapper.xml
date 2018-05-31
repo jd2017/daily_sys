@@ -49,6 +49,14 @@
     from td_person_user
     where person_id = #{personId,jdbcType=BIGINT}
   </select>
+
+  <select id="queryByAccount" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select
+    <include refid="Base_Column_List" />
+    from td_person_user
+    where account = #{account}
+  </select>
+
   <delete id="deleteByPersonId" parameterType="java.lang.Long" >
     delete from td_person_user
     where person_id = #{personId,jdbcType=BIGINT}

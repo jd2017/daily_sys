@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -72,7 +73,29 @@ public class AuthController {
      */
     @RequestMapping(value = "/register",method= RequestMethod.POST)
     public  String regester(Map<String,Object> model, PersonUser personUser){
+        encryptPassword(personUser);
         model.put("user",personUserService.insert(personUser));
         return "/login";
+    }
+
+    /**
+     * 注册客户端用户
+     * @return
+     */
+    @RequestMapping(value = "/validateAccount")
+    @ResponseBody
+    public boolean validateAccount(String account){
+        PersonUser personUser = personUserService.queryByAccount(account);
+        return personUser==null;
+    }
+
+
+    /**
+     * 加密密码
+     */
+    private void encryptPassword(PersonUser personUser){
+        String password = personUser.getPassword();
+        password = new BCryptPasswordEncoder().encode(password);
+        personUser.setPassword(password);
     }
 }

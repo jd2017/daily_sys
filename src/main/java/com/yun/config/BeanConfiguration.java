@@ -11,22 +11,23 @@ import org.springframework.security.web.savedrequest.RequestCacheAwareFilter;
 
 @Configuration
 public class BeanConfiguration {
-//    @Bean
-//    public RequestCache requestCache(){
-//        return new HttpSessionRequestCache();
-//    }
+    @Bean
+    public RequestCache requestCache(){
+        return new HttpSessionRequestCache();
+    }
 
 //    @Bean
 //    public LoginUrlAuthenticationEntryPoint loginUrlAuthenticationEntryPoint(){
 //        return new LoginUrlAuthenticationEntryPoint("/login");
 //    }
-
+//
 //    @Bean
 //    public ExceptionTranslationFilter exceptionTranslationFilter(AuthenticationEntryPoint authenticationEntryPoint) throws Exception{
 //        return new ExceptionTranslationFilter(authenticationEntryPoint);
 //    }
+//
 //    @Bean
-//    public RequestCacheAwareFilter requestCacheAwareFilter() throws Exception{
+//    public RequestCacheAwareFilter requestCacheAwareFilter(RequestCache requestCache) throws Exception{
 //        return new RequestCacheAwareFilter();
 //    }
 

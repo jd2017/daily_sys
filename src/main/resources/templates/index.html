@@ -92,7 +92,8 @@
     function signout(){
         sessionStorage.jwt="";
         var host = window.location.host;
-        window.location = "https://"+host;
+        console.log("https://"+host+"/logout");
+        window.location = "https://"+host+"/logout";
     }
 </script>
 </body>

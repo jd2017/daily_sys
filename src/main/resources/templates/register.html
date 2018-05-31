@@ -27,7 +27,7 @@
                 <div class="form-group">
                     <label for="account" class="col-sm-2 control-label">账户</label>
                     <div class="col-sm-10">
-                        <input type="text" class="form-control" id="account" name="account"/>
+                        <input type="text" class="form-control" id="account" name="account" onblur="velidateAccount()"/>
                     </div>
                 </div>
                 <div class="form-group">
@@ -70,6 +70,29 @@
     $(function(){
         $(".form-horizontal").height($(".container").height()-80-$(".page-header").height());
     });
+
+    function velidateAccount(){
+        $.ajax({
+            url:"validateAccount",
+            type:"get",
+            data:{
+                account:$("#account").val()
+            },
+            header:{"Authorization":"Bearer "+sessionStorage.jwt},
+            success:function (res) {
+                console.log("res："+res);
+                console.log("res.data："+res.data);
+                if(res){
+                    console.log("账户可用");
+                }else{
+                    alert("账户已存在，不可用");
+                }
+            },
+            error:function () {
+                console.log("错误");
+            }
+        })
+    }
 </script>
 </body>
 </html>

@@ -27,5 +27,8 @@ public class PersonUserService {
     public int updateByPersonId(PersonUser personUser){
         return personUserDao.updateByPersonId(personUser);
     };
+    public PersonUser queryByAccount(String account){
+        return personUserDao.queryByAccount(account);
+    };
 
 }

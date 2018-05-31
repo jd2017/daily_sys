@@ -12,4 +12,5 @@ public interface PersonUserDao {
     int insertSelective(PersonUser personUser);
     int updateByPersonId(PersonUser personUser);
 
+    PersonUser queryByAccount(String account);
 }
