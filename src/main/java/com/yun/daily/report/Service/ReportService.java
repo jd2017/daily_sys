@@ -56,14 +56,18 @@ public class ReportService {
      * @param report
      * @return
      */
-    public Page selectByCondition(int pageNumber,int pageSize,Report report){
+    public Page selectByCondition(Long pageNumber,Long pageSize,Report report){
         /*所需参数*/
         Map<String, Object> param=new HashMap<String, Object>();
-        int first=(pageNumber-1)*pageSize;
+        Long first=(pageNumber-1)*pageSize;
         param.put("report", report);
-        int total=reportDao.selectIdsByCondition(param).size();
+        Long total= Long.valueOf(reportDao.selectIdsByCondition(param).size());
         param.put("first", first);
-        param.put("pageSize", pageSize);
+        if((pageNumber*pageSize)>total){
+            param.put("pageSize", total-first);
+        }else {
+            param.put("pageSize", pageSize);
+        }
         List<Long> ids = reportDao.selectIdsByCondition(param);
         Page page = new Page();
         List<Report> rows=reportDao.selectByCondition(ids);//应该加上分页参数

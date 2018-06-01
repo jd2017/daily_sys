@@ -68,11 +68,10 @@
                             <option value="4">年报</option>
                         </select>
                     </div>
-                    <input id="typeVaule" name="typeValue"  type="hidden" />
                     <label class="col-sm-2 control-label">日期</label>
                     <div class="col-sm-4" >
-                        <input class="span2" id="date"  type="text" />
-                        <input type="text" id="d121" size="3"/>
+                        <input class="span2" id="typeValue"  type="text" name="typeValue" />
+                        <input class="span2" type="text" id="d121"/>
                         <input type="text" class="form-control" id="month" onclick="WdatePicker({maxDate:'#F{$dp.$D(\'d121\')}',isShowWeek:true,onpicked:funccc,errDealMode:3})"/>
                         <!--<input type="text" class="form-control" id="month" onclick="WdatePicker({isShowWeek:true,disabledDays: [1,2,3,4,5,6],onpicked:funccc,errDealMode:3})"/>-->
                     </div>
@@ -157,8 +156,8 @@ function typeVauleFun(){
     console.log("type-->"+type);
     $("#date").datetimepicker("remove");
     if(type == '1'){
-        $('#date').val(now.getFullYear()+"-"+monthStr+"-"+dayStr);
-        $("#date").datetimepicker({
+        $('#typeValue').val(now.getFullYear()+"-"+monthStr+"-"+dayStr);
+        $("#typeValue").datetimepicker({
             format: "yyyy-mm-dd",
             language:"zh-CN", //汉化
             autoclose: true,//选择后自动关闭
@@ -187,8 +186,8 @@ function typeVauleFun(){
             pickerPosition: "bottom-left",
         });
     }else if(type == '4'){
-        $('#date').val(now.getFullYear());
-        $("#date").datetimepicker({
+        $('#typeValue').val(now.getFullYear());
+        $("#typeValue").datetimepicker({
             format: "yyyy",
             language:"zh-CN", //汉化
             autoclose: true,//选择后自动关闭
@@ -202,7 +201,24 @@ function typeVauleFun(){
 
 function funccc(){
     // $dp.$('d121').value=$dp.cal.getP('y')+$dp.cal.getP('W','WW');
-    $dp.$('d121').value=$dp.cal.getP('y')+$dp.cal.getP('W','WW');
+    console.log($dp.cal.getP('W','WW'));
+    var weekStartDate = new Date($dp.cal.getP('y'), $dp.cal.getP('M'), $dp.cal.getP('d') - $dp.cal.getP('w'));//获得本周的开端日期
+    var weekEndDate = new Date($dp.cal.getP('y'), $dp.cal.getP('M'), $dp.cal.getP('d') + (6 - $dp.cal.getP('w')));//获得本周的停止日期
+    $dp.$('d121').value=$dp.cal.getP('y')+"年第"+$dp.cal.getP('W','WW')+"周（"+formatDate(weekStartDate)+"-"+formatDate(weekEndDate)+")";
+}
+
+//格局化日期：yyyy-MM-dd
+function formatDate(date) {
+    var mymonth = date.getMonth()+1;
+    var myweekday = date.getDate();
+
+    if(10 > mymonth){
+        mymonth = "0" + mymonth;
+    }
+    if(10 > myweekday){
+        myweekday = "0" + myweekday;
+    }
+    return (mymonth + "-" + myweekday);
 }
 
 var $table;
@@ -229,7 +245,7 @@ function init() {
         showColumns: true,                  //是否显示所有的列（选择显示的列）
         showRefresh: true,                  //是否显示刷新按钮
         minimumCountColumns: 2,             //最少允许的列数
-        clickToSelect: true,                //是否启用点击选中行
+        clickToSelect: false,                //是否启用点击选中行
         //height: 500,                      //行高，如果没有设置height属性，表格自动根据记录条数觉得表格高度
         uniqueId: "reportId",                     //每一行的唯一标识，一般为主键列
         showToggle: false,                   //是否显示详细视图和列表视图的切换按钮
@@ -363,13 +379,12 @@ function init() {
             title: '操作',
             width: 120,
             align: 'center',
-            edit:false,
+            clickToSelect:false,
             formatter: actionFormatter
         }, {
             field:"reportId",
             title:"reportId",
             align:"center",
-            edit:false,
             visible:false,
             searchable:false
         }],
@@ -378,11 +393,6 @@ function init() {
         },
         onLoadError: function () {
             console.info("加载数据失败");
-        },
-        onDblClickRow: function (row, $element) {
-            var id = row.ID;
-            console.log("onDblClickRow");
-            // editViewById(id, 'view');
         },
         onEditableInit:function(){
             console.log("onEditableInit");
@@ -404,14 +414,25 @@ function init() {
             } else if(reason === 'nochange') {
                 // $el.closest('tr').next().find('.editable').editable('show');
             }
+        },
+        onDblClickRow: function (row, $element) {
+            var id = row.ID;
+            console.log("onDblClickRow");
+            // editViewById(id, 'view');
+        },
+        onClickCell:function(field, value, row, $element){
+            console.log("onClickCell");
+            console.log(field+"--"+JSON.stringify(row));
         }
     });
 
     $table.on( 'click', 'td:has(.editable)', function (e) {
         //e.preventDefault();
+        console.log("mao pao")
         e.stopPropagation(); // 阻止事件的冒泡行为
         $(this).find('.editable').editable('show'); // 打开被点击单元格的编辑状态
     } );
+
 }
 
 function insertRow() {
@@ -457,45 +478,47 @@ function actionFormatter(value, row, index) {
     var id = row.reportId;
     var result = '';
     console.log("actionFormatter");
-    console.log('actionFormatter:value='+value+",row="+JSON.stringify(row)+',index='+index+'--reportid-->'+row.reportId);
     result += '<a href="javascript:void(0)" class="btn btn-xs blue" onclick="saveDataById(\''+id+'\')" title="保存"><span class="glyphicon glyphicon-ok"></span></a>';
     result += '<a href="javascript:void(0)" class="btn btn-xs blue" onclick="deleteById(\''+id+'\')" title="删除"><span class="glyphicon glyphicon-remove"></span></a>';
     return result;
 }
 
 function saveDataById(id) {
-    var report = $table.bootstrapTable('getRowByUniqueId', id);
-    console.log('saveDataById:id-->'+id+",row-->"+',report-->'+JSON.stringify(report));
-    var url="/api/v1/report/update";
-    if(id==0) url = "/api/v1/report/save";
-    else url='/api/v1/report/update';
-    //ajax请求服务器
-    $.ajax({
-        url:url,
-        type:"post",
-        data:report,
-        header:{"Authorization":"Bearer "+sessionStorage.jwt},
-        success:function (res) {
-            if(res){
-                if(res.code>0){
-                    console.log("保存成功");
-                    $table.bootstrapTable('refresh', {
-                        url: '/api/v1/report/selectByCondition'
-                    });
+    setTimeout(function(){//为了在onblur="submit"执行后再执行该方法
+        var report = $table.bootstrapTable('getRowByUniqueId', id);
+        console.log('saveDataById:id-->'+id+",row-->"+',report-->'+JSON.stringify(report));
+        var url="/api/v1/report/update";
+        if(id==0) url = "/api/v1/report/save";
+        else url='/api/v1/report/update';
+        //ajax请求服务器
+        $.ajax({
+            url:url,
+            type:"post",
+            data:report,
+            async:true,
+            header:{"Authorization":"Bearer "+sessionStorage.jwt},
+            success:function (res) {
+                if(res){
+                    if(res.code>0){
+                        console.log("保存成功");
+                        $table.bootstrapTable('refresh', {
+                            url: '/api/v1/report/selectByCondition'
+                        });
 
-                    // $("#table_list").bootstrapTable('refresh');
-                    // $('#table_list').bootstrapTable('selectPage', 1);
+                        // $("#table_list").bootstrapTable('refresh');
+                        // $('#table_list').bootstrapTable('selectPage', 1);
+                    }else{
+                        console.log("保存失败");
+                    }
                 }else{
-                    console.log("保存失败");
+                    console.log("出错");
                 }
-            }else{
-                console.log("出错");
+            },
+            error:function () {
+                console.log("请求错误");
             }
-        },
-        error:function () {
-            console.log("请求错误");
-        }
-    })
+        })
+    },100);
 }
 
 function deleteById(id) {

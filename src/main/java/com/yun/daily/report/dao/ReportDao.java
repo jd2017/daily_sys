@@ -39,7 +39,7 @@ public interface ReportDao {
 
     /**
      * 模糊查询
-     * @param reportIds
+     * @param ids
      * @return
      */
     List<Report> selectByCondition(List<Long> ids);

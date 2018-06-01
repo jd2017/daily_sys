@@ -71,7 +71,7 @@ public class ReportController {
 
     @RequestMapping("/selectByCondition")
     @ResponseBody
-    public Page selectByCondition(int pageNumber, int pageSize, Report report){
+    public Page selectByCondition(Long pageNumber, Long pageSize, Report report){
         return reportService.selectByCondition(pageNumber,pageSize,report);
     }
 

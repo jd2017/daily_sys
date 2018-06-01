@@ -20,11 +20,8 @@
 
   <sql id="reportWhereCondition">
     <where>
-      <if test=" reportId != null and reportId != '' and reportId != 'null' ">
-        <![CDATA[ AND A.report_id = #{reportId} ]]>
-      </if>
-      <if test=" account != null and account != '' and account != 'null' ">
-        <![CDATA[ AND A.account = #{account} ]]>
+      <if test=" report.account != null and report.account != '' and report.account != 'null' ">
+        <![CDATA[ AND A.account = #{report.account} ]]>
       </if>
       <if test=" title != null and title != '' and title != 'null' ">
         <![CDATA[ AND A.title = #{title} ]]>
@@ -114,7 +111,7 @@
     <![CDATA[ select A.report_id from td_report A]]>
     <include refid="reportWhereCondition" />
     <![CDATA[ order by A.report_id desc ]]>
-    <if test="first != null and first != '' and first != 'null'" >
+    <if test="first != null" >
       limit #{first},#{pageSize}
     </if>
   </select>

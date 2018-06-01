@@ -60,7 +60,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter{
                 .invalidateHttpSession(true)
                 .and()
                 .rememberMe()//登录后记住用户，下次自动登录,数据库中必须存在名为persistent_logins的表
-                .tokenValiditySeconds(1209600);
+                .tokenValiditySeconds(1209600)
+                .key("reportKey");
         ;
         // 禁用缓存
 //        httpSecurity.headers().cacheControl();
