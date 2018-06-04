@@ -27,6 +27,9 @@ public class Report {
     private String  updateTime;
 
 
+    //查询辅助
     private String authorName;
+    private String beginTime;
+    private String endTime;
 
 }

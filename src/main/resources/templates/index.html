@@ -21,34 +21,48 @@
     <![ENDIF]-->
 </head>
 <body>
-<a th:href="@{/login}">登录</a>
-<a th:href="@{/register}">注册</a>
-<a th:href="@{/api/v1/report/reports}">日报</a>
-<a href="#" onclick="signout()">退出</a>
-  <h2>人员列表</h2>
-  <form method="post">
-      <label for="name">姓名:</label>
-      <input type="text" id="name" name="name"/><br/>
-      <label for="age" >年龄:</label>
-      <input type="text" id="age" name="age"/><br/>
-      <input type="submit"/>
-  </form>
-<!--判断-->
-<div th:if="${not #lists.isEmpty(users)}">
-    <div>
-        <h3>用户列表</h3>
+<div class="container">
+    <div class="row clearfix">
+        <div class="col-md-12 column">
+            <ul class="nav nav-tabs">
+                <li class="active">
+                    <a th:href="@{/index}">首页</a>
+                </li>
+                <li >
+                    <!--<a th:href="@{/api/v1/report/reports}">日报</a>-->
+                    <a th:href="@{/api/v1/report/reports-day}">日报</a>
+                </li>
+                <li >
+                    <a th:href="@{/myReports}">我的日报</a>
+                </li>
+                <li th:if="${person}=='anonymousUser'" class="dropdown pull-right">
+                    <a th:href="@{/login}">登录</a>
+                </li>
+                <li th:if="${person}=='anonymousUser'" class="dropdown pull-right">
+                    <a th:href="@{/register}">注册</a>
+                </li>
+                <li th:if="${person}!='anonymousUser'" class="dropdown pull-right">
+                    <a href="#" data-toggle="dropdown" class="dropdown-toggle"><span th:text="${person.name}"></span><strong class="caret"></strong></a>
+                    <ul class="dropdown-menu">
+                        <li>
+                            <a href="#">个人信息</a>
+                        </li>
+                        <li>
+                            <a href="#">待定</a>
+                        </li>
+                        <li>
+                            <a href="#">待定</a>
+                        </li>
+                        <li class="divider">
+                        </li>
+                        <li>
+                            <a href="#" onclick="signout()">退出</a>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
     </div>
-  <!--迭代-->
-  <ul th:each="user:${users}">
-      <li>
-          <!--通过${}访问model中的属性，和jsp一样，需要动态处理的需要加上“th:”前缀-->
-          <span th:text="${user.id}">First</span>
-          <span th:text="${user.name}">name</span>
-          <span th:text="${user.age}">age</span>
-          <!--在html代码里访问model的值,格式：th:onclick="'getName(\''+${user.name}+'\');'"-->
-          <button th:onclick="'getName(\''+${user.name}+'\');'"></button>
-      </li>
-  </ul>
 </div>
 
 <script th:src="@{/js/jquery-1.12.4.min.js}" type="text/javascript"></script>
@@ -56,39 +70,6 @@
 <!--通过th:inline="javascript"添加到script标签，这样JavaScript代码即可访问model中的属性-->
 <script th:inline="javascript">
     /*通过[[${}]]格式获得实际的值*/
-    var user = [[${personUser}]];
-    console.log(user.name+"/"+user.age);
-    function getName(name) {
-        $.ajax({
-            url:"getUser",
-            type:"post",
-            data:{
-                account:document.all("account").value,
-                password:document.all("password").value
-            },
-            header:{"Authorization":"Bearer "+sessionStorage.jwt},
-            success:function (res) {
-                console.log("res："+res);
-                console.log("res.data："+res.data);
-                if(res){
-                    if(res.code==477){
-                        console.log("477:用户或密码错误");
-                    }else{
-                        console.log("res.code："+res.code);
-                        sessionStorage.jwt=res;
-
-                        //转到主页
-                        window.location.href="index";
-                    }
-                }else{
-                    console.log("账户或密码错误");
-                }
-            },
-            error:function () {
-                console.log("账户或密码错误");
-            }
-        })
-    }
     function signout(){
         sessionStorage.jwt="";
         var host = window.location.host;

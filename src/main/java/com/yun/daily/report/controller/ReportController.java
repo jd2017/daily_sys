@@ -2,6 +2,8 @@ package com.yun.daily.report.controller;
 
 import com.yun.common.Page;
 import com.yun.daily.personUser.controller.PersonUserController;
+import com.yun.daily.personUser.domain.PersonUser;
+import com.yun.daily.personUser.service.PersonUserService;
 import com.yun.daily.report.Service.ReportService;
 import com.yun.daily.report.domain.Report;
 import io.swagger.annotations.ApiImplicitParam;
@@ -11,6 +13,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
@@ -27,6 +30,8 @@ import java.util.Map;
 @RequestMapping(value = "/api/v1/report",produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 public class ReportController {
     @Autowired
+    private PersonUserService personUserService;
+    @Autowired
     private ReportService reportService;
     private Logger log = LoggerFactory.getLogger(PersonUserController.class);
     private DateTimeFormatter df = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
@@ -35,16 +40,29 @@ public class ReportController {
         return "report/reports";
     }
 
+    @RequestMapping("/reports-day")
+    public  String reportsDay(Map<String,Object> model){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        UserDetails userDetails = (UserDetails)authentication.getPrincipal();
+        PersonUser personUser = personUserService.queryByAccount(userDetails.getUsername());
+        model.put("person",personUser);
+        return "report/reports-day";
+    }
+
     @RequestMapping("/save")
     @ResponseBody
-    public  String save(Report report){
+    public  int save(Map map,Report report){
         UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        report.setAccount(userDetails.getUsername());
-        String nowStr = df.format(LocalDateTime.now());
-        report.setCreateTime(nowStr);
-        report.setUpdateTime(nowStr);
-        int result = reportService.insert(report);
-        return "reports";
+        Report report_ = reportService.selectByTypeValue(report.getTypeValue(),userDetails.getUsername());
+        int result =0;
+        if(report_==null){
+            report.setAccount(userDetails.getUsername());
+            String nowStr = df.format(LocalDateTime.now());
+            report.setCreateTime(nowStr);
+            report.setUpdateTime(nowStr);
+            result = reportService.insert(report);
+        }
+        return result;
     }
 
     @RequestMapping("/deleteByID")

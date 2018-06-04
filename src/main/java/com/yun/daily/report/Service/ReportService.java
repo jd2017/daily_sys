@@ -44,6 +44,18 @@ public class ReportService {
 
     /**
      * 根据id查询记录
+     * @param typeValue
+     * @return
+     */
+    public Report selectByTypeValue(String typeValue,String account){
+        Map map =new HashMap();
+        map.put("typeValue",typeValue);
+        map.put("account",account);
+        return reportDao.selectByTypeValue(map);
+    }
+
+    /**
+     * 根据id查询记录
      * @param reportId
      * @return
      */

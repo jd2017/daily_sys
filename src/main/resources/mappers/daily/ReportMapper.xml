@@ -23,29 +23,35 @@
       <if test=" report.account != null and report.account != '' and report.account != 'null' ">
         <![CDATA[ AND A.account = #{report.account} ]]>
       </if>
-      <if test=" title != null and title != '' and title != 'null' ">
-        <![CDATA[ AND A.title = #{title} ]]>
+      <if test=" report.title != null and report.title != '' and report.title != 'null' ">
+        <![CDATA[ AND A.title = #{report.title} ]]>
       </if>
-      <if test=" content != null and content != '' and content != 'null' ">
-        <![CDATA[ AND A.content = #{content} ]]>
+      <if test=" report.content != null and report.content != '' and report.content != 'null' ">
+        <![CDATA[ AND A.content = #{report.content} ]]>
       </if>
-      <if test=" type != null and type != '' and type != 'null' ">
-        <![CDATA[ AND A.type = #{type} ]]>
+      <if test=" report.type != null and report.type != '' and report.type != 'null' ">
+        <![CDATA[ AND A.type = #{report.type} ]]>
       </if>
-      <if test=" typeValue != null and typeValue != '' and typeValue != 'null' ">
-        <![CDATA[ AND A.type_value = #{typeValue} ]]>
+      <if test=" report.typeValue != null and report.typeValue != '' and report.typeValue != 'null' ">
+        <![CDATA[ AND A.type_value = #{report.typeValue} ]]>
       </if>
-      <if test=" summary != null and summary != '' and summary != 'null' ">
-        <![CDATA[ AND A.summary = #{summary} ]]>
+      <if test=" report.beginTime != null and report.beginTime != '' and report.beginTime != 'null' ">
+        <![CDATA[ AND str_to_date(A.type_value,'%Y-%m-%d') >= #{report.beginTime} ]]>
       </if>
-      <if test=" plan != null and plan != '' and plan != 'null' ">
-        <![CDATA[ AND A.plan = #{plan} ]]>
+      <if test=" report.endTime != null and report.endTime != '' and report.endTime != 'null' ">
+        <![CDATA[ AND str_to_date(A.type_value,'%Y-%m-%d') <= #{report.endTime} ]]>
       </if>
-      <if test=" createTime != null and createTime != '' and createTime != 'null' ">
-        <![CDATA[ AND A.create_time = #{createTime} ]]>
+      <if test=" report.summary != null and report.summary != '' and report.summary != 'null' ">
+        <![CDATA[ AND A.summary = #{report.summary} ]]>
       </if>
-      <if test=" updateTime != null and updateTime != '' and updateTime != 'null' ">
-        <![CDATA[ AND A.update_time = #{updateTime} ]]>
+      <if test=" report.plan != null and report.plan != '' and report.plan != 'null' ">
+        <![CDATA[ AND A.plan = #{report.plan} ]]>
+      </if>
+      <if test=" report.createTime != null and report.createTime != '' and report.createTime != 'null' ">
+        <![CDATA[ AND A.create_time = #{report.createTime} ]]>
+      </if>
+      <if test=" report.updateTime != null and report.updateTime != '' and report.updateTime != 'null' ">
+        <![CDATA[ AND A.update_time = #{report.updateTime} ]]>
       </if>
     </where>
   </sql>
@@ -92,11 +98,18 @@
     where report_id = #{reportId}
   </update>
 
-  <select id="selectById" resultMap="reportResultMap" parameterType="java.lang.Long" >
+  <select id="selectById" resultMap="reportResultMap" parameterType="java.lang.String" >
     select
     <include refid="columns" />
     from td_report
     where report_id = #{reportId}
+  </select>
+
+  <select id="selectByTypeValue" resultMap="reportResultMap" parameterType="java.util.Map" >
+    select
+    <include refid="columns" />
+    from td_report
+    where type_value = #{typeValue} AND account=#{account}
   </select>
 
   <select id="selectByCondition" resultMap="reportResultMap" parameterType="java.util.List" >
@@ -104,7 +117,7 @@
     <foreach collection="list" item="id" index="index" open="(" close=")" separator="," >
      #{id}
     </foreach>
-
+    <![CDATA[ order by A.report_id desc ]]>
   </select>
 
   <select id="selectIdsByCondition" resultType="java.lang.Long" parameterType="java.util.Map" >

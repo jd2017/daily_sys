@@ -6,7 +6,7 @@
     <meta http-equiv="x-ua-compatible" content="IE=edge"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <!--上面3个meta标签必须是head的头三个标签，其余的head内标签在此3个标签之后-->
-    <title>日报系统首页</title>
+    <title>日报</title>
     <!--使用@{}引用web静态资源，这在jsp下是极易出错的-->
     <link th:href="@{/js/bootstrap-3.3.7/css/bootstrap.min.css}" rel="stylesheet"/>
     <link th:href="@{/js/bootstrap-3.3.7/css/bootstrap-theme.min.css}" rel="stylesheet"/>
@@ -22,6 +22,28 @@
     <script th:src="@{/js/html5shiv/html5shiv.js}"></script>
     <script th:src="@{/js/respond.min.js}"></script>
     <![ENDIF]-->
+
+    <style type="text/css">
+        body {
+            min-height: 2000px;
+            /*padding-top: 70px;*/
+        }
+        .addcss{
+            padding: 6px 12px;
+            font-size: 14px;
+            font-weight: normal;
+            line-height: 1;
+            color: #555;
+            text-align: center;
+            /*background-color: #eee;*/
+            /*border: 1px solid #ccc;*/
+            /*border-radius: 4px;*/
+            display: table-cell;
+            width: 1%;
+            white-space: nowrap;
+            vertical-align: middle;
+        }
+    </style>
 </head>
 <body>
 <div class="container">
@@ -57,66 +79,59 @@
                     </ul>
                 </li>
             </ul>
-            <form class="form-horizontal" role="form" id="queryForm">
-                <div class="form-group">
-                    <label class="col-sm-2 control-label">类别</label>
-                    <div class="col-sm-4">
-                        <select class="form-control" id="type" name="type">
-                            <option value="1" selected="selected">日报</option>
-                            <option value="2">周报</option>
-                            <option value="3">月报</option>
-                            <option value="4">年报</option>
-                        </select>
+            <form class="form-horizontal" role="form" id="queryForm" style="margin-top:10px;">
+                <fieldset>
+                    <legend><h5>查询日报列表</h5></legend>
+                    <div class="form-group">
+                        <input type="hidden" name="type" value="1"/>
+                        <label class="col-sm-2 control-label">日期</label>
+                        <div class="col-sm-3">
+                            <label class="radio-inline"><input type="radio" name="query-type" value="1" checked="checked"/>按天查询</label>
+                            <label class="radio-inline"><input type="radio" name="query-type" value="2"/>按时间段查询</label>
+                        </div>
+                        <div class="col-sm-2" id="query-type1">
+                            <input class="form-control" id="typeValue"  type="text" name="typeValue" />
+                        </div>
+                        <div class="col-sm-4" id="query-type2" style="display: none">
+                            <div class="input-group">
+                                <input class="form-control" id="beginTime"  type="text" name="beginTime" />
+                                <span class="addcss">~</span>
+                                <input class="form-control" id="endTime"  type="text" name="endTime" />
+                            </div>
+                        </div>
                     </div>
-                    <label class="col-sm-2 control-label">日期</label>
-                    <div class="col-sm-4" >
-                        <input class="span2" id="typeValue"  type="text" name="typeValue" />
-                        <input class="span2" type="text" id="d121"/>
-                        <input type="text" class="form-control" id="month" onclick="WdatePicker({maxDate:'#F{$dp.$D(\'d121\')}',isShowWeek:true,onpicked:funccc,errDealMode:3})"/>
-                        <!--<input type="text" class="form-control" id="month" onclick="WdatePicker({isShowWeek:true,disabledDays: [1,2,3,4,5,6],onpicked:funccc,errDealMode:3})"/>-->
+                    <div class="form-group">
+                        <label for="account" class="col-sm-2 control-label">用户账户</label>
+                        <div class="col-sm-4">
+                            <input type="text" class="form-control" id="account" name="account"/>
+                        </div>
+                        <label for="name" class="col-sm-2 control-label">用户姓名</label>
+                        <div class="col-sm-4">
+                            <input type="text" class="form-control" id="name" />
+                        </div>
                     </div>
-                    <!--<div class="col-sm-4" name="typeValue">-->
-                        <!--<input type="text" class="form-control" id="week" />-->
-                    <!--</div>-->
-                    <!--<div class="col-sm-4" name="typeValue">-->
-                        <!--<input type="text" id="d122_1" size="3"/>-->
-                        <!--<input type="text" class="form-control" id="month" onclick="WdatePicker({isShowWeek:true,onpicked:function() {$dp.$('d122_1').value=$dp.cal.getP('y','yyyy')+':'+$dp.cal.getP('M','M')+':'+$dp.cal.getP('W','W');}})"/>-->
-                    <!--</div>-->
-                    <!--<div class="col-sm-4" name="typeValue">-->
-                        <!--<input type="text" class="form-control" id="year" />-->
-                    <!--</div>-->
-                </div>
-                <div class="form-group">
-                    <label for="account" class="col-sm-2 control-label">用户账户</label>
-                    <div class="col-sm-4">
-                        <input type="text" class="form-control" id="account" name="account"/>
+                    <div class="form-group">
+                        <label for="title" class="col-sm-2 control-label">标题</label>
+                        <div class="col-sm-4">
+                            <input type="text" class="form-control" id="title" />
+                        </div>
+                        <label for="content" class="col-sm-2 control-label">内容</label>
+                        <div class="col-sm-4">
+                            <input type="text" class="form-control" id="content" />
+                        </div>
                     </div>
-                    <label for="name" class="col-sm-2 control-label">用户姓名</label>
-                    <div class="col-sm-4">
-                        <input type="text" class="form-control" id="name" />
+                    <div class="form-group">
+                        <label for="summary" class="col-sm-2 control-label">小结</label>
+                        <div class="col-sm-4">
+                            <input type="text" class="form-control" id="summary" />
+                        </div>
                     </div>
-                </div>
-                <div class="form-group">
-                    <label for="title" class="col-sm-2 control-label">标题</label>
-                    <div class="col-sm-4">
-                        <input type="text" class="form-control" id="title" />
+                    <div class="form-group">
+                        <div class="col-sm-offset-2 col-sm-10">
+                            <button type="button" class="btn btn-default" onclick="queryFun()">查询</button>
+                        </div>
                     </div>
-                    <label for="content" class="col-sm-2 control-label">内容</label>
-                    <div class="col-sm-4">
-                        <input type="text" class="form-control" id="content" />
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label for="summary" class="col-sm-2 control-label">小结</label>
-                    <div class="col-sm-4">
-                        <input type="text" class="form-control" id="summary" />
-                    </div>
-                </div>
-                <div class="form-group">
-                    <div class="col-sm-offset-2 col-sm-10">
-                        <button type="button" class="btn btn-default" onclick="queryFun()">查询</button>
-                    </div>
-                </div>
+                </fieldset>
             </form>
             <button type="button" class="btn btn-default" onclick="insertRow()">新增</button>
             <table id="report_table">
@@ -138,87 +153,66 @@
 <script type="text/javascript">
 $(function(){
     typeVauleFun();
-    $("#type").change(function(){
-        typeVauleFun();
-    });
     init();
+
+    $(":radio[name='query-type']").click(function(){
+        var val = $(this).val();
+        if(val==1){
+            $("#typeValue").val(nowDayStr);
+            $("#beginTime").val("");
+            $("#endTime").val("");
+            $("#query-type1").show();
+            $("#query-type2").hide();
+
+        }else{
+            $("#typeValue").val("");
+            $("#query-type1").hide();
+            $("#query-type2").show();
+        }
+    });
 });
 
+var now = new Date();
+var month = now.getMonth()+1;
+var day = now.getDate();
+var monthStr = month >= 10?month:"0"+month;
+//用month 小于小于 9?"0":month:month;会报错：org.xml.sax.SAXParseException: 元素内容必须由格式正确的字符数据或标记组成。
+//换成>=就可以，不知为何
+var dayStr = day >= 10?day:"0"+day;
+var nowDayStr = now.getFullYear()+"-"+monthStr+"-"+dayStr;
+
 function typeVauleFun(){
-    var now = new Date();
-    var month = now.getMonth()+1;
-    var day = now.getDate();
-    var monthStr = month >= 10?month:"0"+month;
-    //用month 小于小于 9?"0":month:month;会报错：org.xml.sax.SAXParseException: 元素内容必须由格式正确的字符数据或标记组成。
-    //换成>=就可以，不知为何
-    var dayStr = day >= 10?day:"0"+day;
-    var type = $("#type").val();
-    console.log("type-->"+type);
-    $("#date").datetimepicker("remove");
-    if(type == '1'){
-        $('#typeValue').val(now.getFullYear()+"-"+monthStr+"-"+dayStr);
-        $("#typeValue").datetimepicker({
-            format: "yyyy-mm-dd",
-            language:"zh-CN", //汉化
-            autoclose: true,//选择后自动关闭
-            todayBtn: true,//显示今天按钮,//不显示时分秒
-            minView: "month",//设置只显示到月份
-            pickerPosition: "bottom-left",
-            // startDate:now.getFullYear()+"-"+(now.getMonth()+1)+"-"+now.getDate(),//开始时间
-            todayHighlight:true ,//如果为true, 高亮当前日期。
-            showWeekNumbers:true
-        });
-    }else if(type == '2'){
-        $('#date').val(now.getFullYear()+"-"+monthStr+"-"+dayStr);
-        // $("#date").datepicker({
-        //     beforeShowDay: nonWorkingDates,
-        //     numberOfMonths: 1,
-        //     firstDay: 1
-        // });
-    }else if(type == '3'){
-        $('#date').val(now.getFullYear()+"-"+monthStr);
-        $("#date").datetimepicker({
-            format: "yyyy-mm",
-            language:"zh-CN", //汉化
-            autoclose: true,//选择后自动关闭
-            startView: 3,
-            minView: 3,//设置只显示到月份
-            pickerPosition: "bottom-left",
-        });
-    }else if(type == '4'){
-        $('#typeValue').val(now.getFullYear());
-        $("#typeValue").datetimepicker({
-            format: "yyyy",
-            language:"zh-CN", //汉化
-            autoclose: true,//选择后自动关闭
-            startView: 4,
-            minView: 4,//设置只显示到月份
-            pickerPosition: "bottom-left",
-            forceParse: false
-        });
-    }
-}
-
-function funccc(){
-    // $dp.$('d121').value=$dp.cal.getP('y')+$dp.cal.getP('W','WW');
-    console.log($dp.cal.getP('W','WW'));
-    var weekStartDate = new Date($dp.cal.getP('y'), $dp.cal.getP('M'), $dp.cal.getP('d') - $dp.cal.getP('w'));//获得本周的开端日期
-    var weekEndDate = new Date($dp.cal.getP('y'), $dp.cal.getP('M'), $dp.cal.getP('d') + (6 - $dp.cal.getP('w')));//获得本周的停止日期
-    $dp.$('d121').value=$dp.cal.getP('y')+"年第"+$dp.cal.getP('W','WW')+"周（"+formatDate(weekStartDate)+"-"+formatDate(weekEndDate)+")";
-}
-
-//格局化日期：yyyy-MM-dd
-function formatDate(date) {
-    var mymonth = date.getMonth()+1;
-    var myweekday = date.getDate();
-
-    if(10 > mymonth){
-        mymonth = "0" + mymonth;
-    }
-    if(10 > myweekday){
-        myweekday = "0" + myweekday;
-    }
-    return (mymonth + "-" + myweekday);
+    $('#typeValue').val(nowDayStr);
+    $("#typeValue").datetimepicker({
+        format: "yyyy-mm-dd",
+        language:"zh-CN", //汉化
+        autoclose: true,//选择后自动关闭
+        todayBtn: true,//显示今天按钮,//不显示时分秒
+        minView: "month",//设置只显示到月份
+        pickerPosition: "bottom-left",
+        todayHighlight:true ,//如果为true, 高亮当前日期。
+        showWeekNumbers:true
+    });
+    $("#beginTime").datetimepicker({
+        format: "yyyy-mm-dd",
+        language:"zh-CN", //汉化
+        autoclose: true,//选择后自动关闭
+        todayBtn: true,//显示今天按钮,//不显示时分秒
+        minView: "month",//设置只显示到月份
+        pickerPosition: "bottom-left",
+        todayHighlight:true ,//如果为true, 高亮当前日期。
+        showWeekNumbers:true
+    });
+    $("#endTime").datetimepicker({
+        format: "yyyy-mm-dd",
+        language:"zh-CN", //汉化
+        autoclose: true,//选择后自动关闭
+        todayBtn: true,//显示今天按钮,//不显示时分秒
+        minView: "month",//设置只显示到月份
+        pickerPosition: "bottom-left",
+        todayHighlight:true ,//如果为true, 高亮当前日期。
+        showWeekNumbers:true
+    });
 }
 
 var $table;
@@ -351,13 +345,11 @@ function init() {
             field: 'type',
             title: '类型',
             sortable: true,
-            visible:false,
-            formatter:typeFormatter
+            visible:false
         },{
             field: 'typeValue',
-            title: '类型值',
+            title: '日期',
             sortable: true,
-            visible:false,
             formatter: typeVauleFormatter
         },{
             field: 'account',
@@ -437,16 +429,14 @@ function init() {
 
 function insertRow() {
     console.log($table.bootstrapTable('getRowByUniqueId', 0))
-    var type=$("#type").val();
-    var typeValue='';
     if($table.bootstrapTable('getRowByUniqueId', 0)==null){
         var rowData = {
             title: '标题',
             content: '内容',
             summary:'小结',
             plan:'计划',
-            type:type,
-            typeValue:typeValue,
+            type:'1',
+            typeValue:nowDayStr,
             reportId:0
         };
         $table.bootstrapTable('insertRow', {index: 0, row:rowData });
@@ -455,22 +445,20 @@ function insertRow() {
     }
 }
 
-function typeFormatter(value, row, index){
-    if(value==0){
-        return $("#typeValue").val();
-    }else{
-        return value;
-    }
-
-}
-
 function typeVauleFormatter(value, row, index){
-    if(value==0){
-        return $("#typeValue").val();
+    console.log("typeVauleFormatter-->"+value);
+    if(row.reportId==0){
+        return '<input type="text" class="form-control" id="typeValue0" value="'+value+'" onclick="WdatePicker({isShowWeek:true,errDealMode:3,onpicked:funcc})"/>';
     }else{
         return value;
     }
-
+}
+function funcc(){
+    $table.bootstrapTable('updateCell', {
+        index:0,
+        field:'typeValue',
+        value: $dp.cal.getNewDateStr()
+    });
 }
 
 //操作栏的格式化
@@ -490,34 +478,31 @@ function saveDataById(id) {
         var url="/api/v1/report/update";
         if(id==0) url = "/api/v1/report/save";
         else url='/api/v1/report/update';
+        debugger;
         //ajax请求服务器
         $.ajax({
             url:url,
             type:"post",
             data:report,
-            async:true,
             header:{"Authorization":"Bearer "+sessionStorage.jwt},
             success:function (res) {
-                if(res){
-                    if(res.code>0){
-                        console.log("保存成功");
-                        $table.bootstrapTable('refresh', {
-                            url: '/api/v1/report/selectByCondition'
-                        });
+                debugger
+                if(res>0){
+                    console.log("保存成功");
+                    $table.bootstrapTable('refresh', {
+                        url: '/api/v1/report/selectByCondition'
+                    });
 
-                        // $("#table_list").bootstrapTable('refresh');
-                        // $('#table_list').bootstrapTable('selectPage', 1);
-                    }else{
-                        console.log("保存失败");
-                    }
+                }else if(res==0){
+                    alert("保存失败，您已有"+report.typeValue+"当天的记录，不能重复添加");
                 }else{
-                    console.log("出错");
+                    console.log("保存失败");
                 }
             },
             error:function () {
                 console.log("请求错误");
             }
-        })
+        });
     },100);
 }
 
@@ -544,8 +529,6 @@ function deleteById(id) {
                             url: '/api/v1/report/selectByCondition'
                         });
 
-                        // $("#table_list").bootstrapTable('refresh');
-                        // $('#table_list').bootstrapTable('selectPage', 1);
                     }else{
                         console.log("删除失败");
                     }

@@ -50,4 +50,6 @@ public interface ReportDao {
      * @return
      */
     List<Long> selectIdsByCondition(Map<String, Object> param);
+
+    Report selectByTypeValue(Map map);
 }
