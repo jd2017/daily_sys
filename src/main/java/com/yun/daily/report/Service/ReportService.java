@@ -6,6 +6,7 @@ import com.yun.daily.report.domain.Report;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -80,11 +81,17 @@ public class ReportService {
         }else {
             param.put("pageSize", pageSize);
         }
-        List<Long> ids = reportDao.selectIdsByCondition(param);
         Page page = new Page();
-        List<Report> rows=reportDao.selectByCondition(ids);//应该加上分页参数
+
         page.setTotal(total);
-        page.setRows(rows);
+        if(total>0){
+            List<Long> ids = reportDao.selectIdsByCondition(param);
+            List<Report> rows=reportDao.selectByCondition(ids);//应该加上分页参数
+            page.setRows(rows);
+        }else{
+            page.setRows(new ArrayList<>());
+        }
+
         return page;
     }
 }

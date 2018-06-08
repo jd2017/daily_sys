@@ -37,6 +37,7 @@ public class AuthController {
 
     @RequestMapping(value = {"/login","/"})
     public  String sigin(Map<String,Object> model){
+        int i=1+2;
         return "login";
     }
 

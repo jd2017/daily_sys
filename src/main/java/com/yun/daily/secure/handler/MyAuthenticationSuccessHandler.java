@@ -1,9 +1,11 @@
 package com.yun.daily.secure.handler;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.web.authentication.SavedRequestAwareAuthenticationSuccessHandler;
+import org.springframework.security.web.authentication.rememberme.PersistentTokenBasedRememberMeServices;
 import org.springframework.security.web.savedrequest.HttpSessionRequestCache;
 import org.springframework.security.web.savedrequest.RequestCache;
 import org.springframework.security.web.savedrequest.SavedRequest;
@@ -26,6 +28,8 @@ public class MyAuthenticationSuccessHandler extends
         SavedRequestAwareAuthenticationSuccessHandler {
 	private Map<String, String> authDispatcherMap;
 	private RequestCache requestCache = new HttpSessionRequestCache();
+	@Autowired
+	private PersistentTokenBasedRememberMeServices persistentTokenBasedRememberMeServices;
 
 //	@Autowired
 //	private IUserService userService;

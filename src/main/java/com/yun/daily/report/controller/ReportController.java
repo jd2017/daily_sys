@@ -49,6 +49,15 @@ public class ReportController {
         return "report/reports-day";
     }
 
+    @RequestMapping("/reports-me")
+    public  String reportsMe(Map<String,Object> model){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        UserDetails userDetails = (UserDetails)authentication.getPrincipal();
+        PersonUser personUser = personUserService.queryByAccount(userDetails.getUsername());
+        model.put("person",personUser);
+        return "report/reports-me";
+    }
+
     @RequestMapping("/save")
     @ResponseBody
     public  int save(Map map,Report report){
@@ -90,6 +99,15 @@ public class ReportController {
     @RequestMapping("/selectByCondition")
     @ResponseBody
     public Page selectByCondition(Long pageNumber, Long pageSize, Report report){
+        return reportService.selectByCondition(pageNumber,pageSize,report);
+    }
+
+    @RequestMapping("/selectMyByCondition")
+    @ResponseBody
+    public Page selectMyByCondition(Long pageNumber, Long pageSize, Report report){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        UserDetails userDetails = (UserDetails)authentication.getPrincipal();
+        report.setAccount(userDetails.getUsername());
         return reportService.selectByCondition(pageNumber,pageSize,report);
     }
 

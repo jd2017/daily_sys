@@ -6,7 +6,7 @@
     <meta http-equiv="x-ua-compatible" content="IE=edge"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <!--上面3个meta标签必须是head的头三个标签，其余的head内标签在此3个标签之后-->
-    <title>日报</title>
+    <title>我的日报</title>
     <!--使用@{}引用web静态资源，这在jsp下是极易出错的-->
     <link th:href="@{/js/bootstrap-3.3.7/css/bootstrap.min.css}" rel="stylesheet"/>
     <link th:href="@{/js/bootstrap-3.3.7/css/bootstrap-theme.min.css}" rel="stylesheet"/>
@@ -53,10 +53,10 @@
                 <li >
                     <a th:href="@{/index}">首页</a>
                 </li>
-                <li class="active">
-                    <a th:href="@{/reports}">日报</a>
+                <li >
+                    <a th:href="@{/api/v1/report/reports-day}">日报</a>
                 </li>
-                <li class="disabled">
+                <li class="active">
                     <a th:href="@{/api/v1/report/reports-me}">我的日报</a>
                 </li>
                 <li class="dropdown pull-right">
@@ -98,16 +98,6 @@
                                 <span class="addcss">~</span>
                                 <input class="form-control" id="endTime"  type="text" name="endTime" />
                             </div>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label for="account" class="col-sm-2 control-label">用户账户</label>
-                        <div class="col-sm-4">
-                            <input type="text" class="form-control" id="account" name="account"/>
-                        </div>
-                        <label for="name" class="col-sm-2 control-label">用户姓名</label>
-                        <div class="col-sm-4">
-                            <input type="text" class="form-control" id="name" />
                         </div>
                     </div>
                     <div class="form-group">
@@ -218,7 +208,7 @@ function typeVauleFun(){
 var $table;
 function init() {
     //记录页面bootstrap-table全局变量$table，方便应用
-    var queryUrl = '/api/v1/report/selectByCondition';
+    var queryUrl = '/api/v1/report/selectMyByCondition';
     $table = $('#report_table').bootstrapTable('destroy').bootstrapTable({
         url: queryUrl,                      //请求后台的URL（*）
         method: 'post',                      //请求方式（*）
@@ -287,18 +277,60 @@ function init() {
             field: 'title',
             title: '标题',
             sortable: true,
-            align: 'center'
+            align: 'center',
+            editable: {
+                type: 'text',
+                mode: "inline",
+                title: '标题',
+                showbuttons:false,
+                emptytext:"",
+                onblur:"submit",
+                validate: function (v) {
+                }
+            }
         }, {
             field: 'content',
-            title: '内容'
+            title: '内容',
+            editable: {
+                type: 'text',
+                mode: "inline",
+                title: '内容',
+                showbuttons:false,
+                emptytext:"",
+                onblur:"submit",
+                validate: function (v) {
+                }
+            }
         }, {
             field: 'summary',
             title: '小结',
-            sortable: true
+            sortable: true,
+            editable: {
+                type: 'text',
+                mode: "inline",
+                title: '小结',
+                showbuttons:false,
+                emptytext:"",
+                onblur:"submit",
+                validate: function (v) {
+
+                }
+            }
         },{
             field: 'plan',
             title: '计划',
-            sortable: true
+            sortable: true,
+            editable: {
+                type: 'text',
+                mode: "inline",
+                title: '计划',
+                showbuttons:false,
+                emptytext:"",
+                onblur:"submit",
+                validate: function (v) {
+
+                }
+            }
         },{
             field: 'type',
             title: '类型',
@@ -307,7 +339,8 @@ function init() {
         },{
             field: 'typeValue',
             title: '日期',
-            sortable: true
+            sortable: true,
+            formatter: typeVauleFormatter
         },{
             field: 'account',
             title: '用户账号'
@@ -323,6 +356,13 @@ function init() {
             field: 'updateTime',
             title: '修改日期',
             formatter:dateSubStr
+        }, {
+            field:'action',
+            title: '操作',
+            width: 120,
+            align: 'center',
+            clickToSelect:false,
+            formatter: actionFormatter
         }, {
             field:"reportId",
             title:"reportId",
@@ -349,6 +389,13 @@ function init() {
         },
         onEditableHidden: function(field, row, $el, reason) { // 当编辑状态被隐藏时触发
             console.log("onEditableHidden");
+            if(reason === 'save') {
+                // var $td = $el.closest('tr').children();
+                // $td.eq(-1).html((row.price*row.number).toFixed(2));
+                // $el.closest('tr').next().find('.editable').editable('show'); //编辑状态向下一行移动
+            } else if(reason === 'nochange') {
+                // $el.closest('tr').next().find('.editable').editable('show');
+            }
         },
         onDblClickRow: function (row, $element) {
             var id = row.ID;
@@ -370,10 +417,125 @@ function init() {
 
 }
 
+function insertRow() {
+    console.log($table.bootstrapTable('getRowByUniqueId', 0))
+    if($table.bootstrapTable('getRowByUniqueId', 0)==null){
+        var rowData = {
+            title: '标题',
+            content: '内容',
+            summary:'小结',
+            plan:'计划',
+            type:'1',
+            typeValue:nowDayStr,
+            reportId:0
+        };
+        $table.bootstrapTable('insertRow', {index: 0, row:rowData });
+    }else{
+        console.log("您还有没保存的数据，不能新增");
+    }
+}
+
+function typeVauleFormatter(value, row, index){
+    console.log("typeVauleFormatter-->"+value);
+    if(row.reportId==0){
+        return '<input type="text" class="form-control" id="typeValue0" value="'+value+'" onclick="WdatePicker({isShowWeek:true,errDealMode:3,onpicked:funcc})"/>';
+    }else{
+        return value;
+    }
+}
+function funcc(){
+    $table.bootstrapTable('updateCell', {
+        index:0,
+        field:'typeValue',
+        value: $dp.cal.getNewDateStr()
+    });
+}
+
+//操作栏的格式化
+function actionFormatter(value, row, index) {
+    var id = row.reportId;
+    var result = '';
+    console.log("actionFormatter");
+    result += '<a href="javascript:void(0)" class="btn btn-xs blue" onclick="saveDataById(\''+id+'\')" title="保存"><span class="glyphicon glyphicon-ok"></span></a>';
+    result += '<a href="javascript:void(0)" class="btn btn-xs blue" onclick="deleteById(\''+id+'\')" title="删除"><span class="glyphicon glyphicon-remove"></span></a>';
+    return result;
+}
+
+function saveDataById(id) {
+    setTimeout(function(){//为了在onblur="submit"执行后再执行该方法
+        var report = $table.bootstrapTable('getRowByUniqueId', id);
+        console.log('saveDataById:id-->'+id+",row-->"+',report-->'+JSON.stringify(report));
+        var url="/api/v1/report/update";
+        if(id==0) url = "/api/v1/report/save";
+        else url='/api/v1/report/update';
+        debugger;
+        //ajax请求服务器
+        $.ajax({
+            url:url,
+            type:"post",
+            data:report,
+            header:{"Authorization":"Bearer "+sessionStorage.jwt},
+            success:function (res) {
+                debugger
+                if(res>0){
+                    console.log("保存成功");
+                    $table.bootstrapTable('refresh', {
+                        url: '/api/v1/report/selectMyByCondition'
+                    });
+
+                }else if(res==0){
+                    alert("保存失败，您已有"+report.typeValue+"当天的记录，不能重复添加");
+                }else{
+                    console.log("保存失败");
+                }
+            },
+            error:function () {
+                console.log("请求错误");
+            }
+        });
+    },100);
+}
+
+function deleteById(id) {
+    console.log('deleteById:id-->'+id);
+    $table.bootstrapTable('remove', {
+        field: "reportId",
+        values: [parseInt(id)]
+    });
+    if(id!=0){
+        //ajax请求服务器
+        $.ajax({
+            url:"/api/v1/report/deleteByID",
+            type:"post",
+            data:{
+                reportId:id
+            },
+            header:{"Authorization":"Bearer "+sessionStorage.jwt},
+            success:function (res) {
+                if(res){
+                    if(res>0){
+                        console.log("删除成功");
+                        $table.bootstrapTable('refresh', {
+                            url: '/api/v1/report/selectMyByCondition'
+                        });
+
+                    }else{
+                        console.log("删除失败");
+                    }
+                }else{
+                    console.log("出错");
+                }
+            },
+            error:function () {
+                console.log("请求错误");
+            }
+        })
+    }
+}
 
 function queryFun() {
     $table.bootstrapTable('refresh', {
-        url: '/api/v1/report/selectByCondition'
+        url: '/api/v1/report/selectMyByCondition'
     });
 }
 </script>
