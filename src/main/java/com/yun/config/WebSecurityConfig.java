@@ -104,7 +104,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter{
                 // 配置UserDetailsService
                 .userDetailsService(userDetailsService);
         // 禁用缓存
-//        httpSecurity.headers().cacheControl();
+        httpSecurity.headers().cacheControl();
 
         /*addFilterBefore(Filter filter, Class<? extends Filter> beforeFilter)
         在 beforeFilter 之前添加 filter
