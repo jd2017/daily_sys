@@ -45,13 +45,13 @@
  }
 
  function connect(){
-     var socket = new SockJS("/endpointWS");
-     stompClient = Stomp.over(socket);
+     var socket = new SockJS("/endpointWS");//连接SockJS的endpoint名称为'endpointWS'
+     stompClient = Stomp.over(socket);//使用stomp自协议的WebSocket客户端
      console.log('connect');
-     stompClient.connect({},function(frame){
+     stompClient.connect({},function(frame){//连接WebSocket客户端
         setConnected(true);
         console.log('Connected:'+frame);
-        stompClient.subscribe('/topic/getResponse',function(response){
+        stompClient.subscribe('/topic/getResponse',function(response){//通过stompClient.subscribe订阅/topic/getResponse目标发送的消息，这个是在控制器的@SendTo中定义的
             console.log("-=====");
             showResponse(JSON.parse(response.body).responseMessage);
         });
@@ -68,7 +68,7 @@
 
  function  sendName() {
      var name = $("#name").val();
-     stompClient.send("/welcome",{},JSON.stringify({'name':name}));
+     stompClient.send("/welcome",{},JSON.stringify({'name':name}));//通过stompClient.send向/welcome目标发送消息，这个是在控制器的@MessageMapping中定义的
  }
 
  function showResponse(message) {

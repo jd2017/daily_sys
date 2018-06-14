@@ -35,6 +35,9 @@
                 <li >
                     <a th:href="@{/api/v1/report/reports-me}">我的日报</a>
                 </li>
+                <li >
+                    <a th:href="@{/api/v1/chat/toChat}">聊天室</a>
+                </li>
                 <li th:if="${person}=='anonymousUser'" class="dropdown pull-right">
                     <a th:href="@{/login}">登录</a>
                 </li>
