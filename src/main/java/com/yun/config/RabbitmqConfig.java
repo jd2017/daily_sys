@@ -1,16 +1,14 @@
 package com.yun.config;
 
-import com.rabbitmq.client.AMQP;
-import com.rabbitmq.client.impl.AMQImpl;
 import com.yun.common.Constant;
 import org.springframework.amqp.core.Queue;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-public class RabbitConfig {
+public class RabbitmqConfig {
     @Bean
-    public Queue Queue() {
+    public Queue myqueue() {
         return new Queue(Constant.QUEUE_RABBITMQ_LIVE_CHAT);
     }
 }
