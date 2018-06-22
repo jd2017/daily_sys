@@ -38,7 +38,7 @@ public class ChatController {
         PersonUser personUser = personUserService.queryByAccount(userDetails.getUsername());
         model.put("person",personUser);
         System.out.println("chat");
-        return "/websocket/chat";
+        return "websocket/chat";
     }
 
     //进入聊天室页面  点对点

@@ -46,6 +46,9 @@
                 <li class="active">
                     <a th:href="@{/api/v1/chat/toChat}">聊天室</a>
                 </li>
+                <li >
+                    <a th:href="@{/api/v1/rabbitmq/send}">rabbitmq-发送消息</a>
+                </li>
                 <li class="dropdown pull-right">
                     <a href="#" data-toggle="dropdown" class="dropdown-toggle"><span th:text="${person.name}"></span><strong class="caret"></strong></a>
                     <ul class="dropdown-menu">

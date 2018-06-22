@@ -15,7 +15,7 @@ public class ReceiverListener {
 //    public void receiver(String message) {
 //        System.out.println("收到<"+message+">");
 //    }
-
+//http://wenda.workerman.net/?/question/2810
     @RabbitListener(queues = Constant.QUEUE_RABBITMQ_LIVE_CHAT)
     @RabbitHandler
     public void receiver(MyMessage myMessage) {
