@@ -4,6 +4,8 @@ import com.yun.daily.personUser.domain.PersonUser;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
 
+import java.util.List;
+
 @Mapper
 public interface PersonUserDao {
     PersonUser selectByPersonId(String personId);
@@ -13,4 +15,6 @@ public interface PersonUserDao {
     int updateByPersonId(PersonUser personUser);
 
     PersonUser queryByAccount(String account);
+
+    List<PersonUser> queryAllExceptCurrentUserByAccount(String account);
 }

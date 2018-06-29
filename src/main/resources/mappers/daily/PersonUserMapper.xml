@@ -57,6 +57,12 @@
     where account = #{account}
   </select>
 
+  <select id="queryAllExceptCurrentUserByAccount" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select person_id,account,name,sex,mobile
+    from td_person_user
+    where <![CDATA[account <> #{account}]]>
+  </select>
+
   <delete id="deleteByPersonId" parameterType="java.lang.Long" >
     delete from td_person_user
     where person_id = #{personId,jdbcType=BIGINT}

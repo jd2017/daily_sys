@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.List;
 
 @Service
 public class PersonUserService {
@@ -29,6 +30,10 @@ public class PersonUserService {
     };
     public PersonUser queryByAccount(String account){
         return personUserDao.queryByAccount(account);
+    };
+
+    public List<PersonUser> queryAllExceptCurrentUserByAccount(String account){
+        return personUserDao.queryAllExceptCurrentUserByAccount(account);
     };
 
 }

@@ -37,15 +37,17 @@ public class ChatController {
         UserDetails userDetails = (UserDetails)authentication.getPrincipal();
         PersonUser personUser = personUserService.queryByAccount(userDetails.getUsername());
         model.put("person",personUser);
-        System.out.println("chat");
+        //找出非当前登录用户的所有用户
+        model.put("persons",personUserService.queryAllExceptCurrentUserByAccount(userDetails.getUsername()));
         return "websocket/chat";
     }
 
     //进入聊天室页面  点对点
     @MessageMapping("/chat")
     public void handleChat(Principal principal, Message msg){
-        String from = principal.getName();messagingTemplate.getMessageChannel();
-        messagingTemplate.convertAndSendToUser(msg.getSendTo(),"/queue/notifications",from+"-send:"+msg.getMessage());
+        String from = principal.getName();
+        PersonUser personUser = personUserService.queryByAccount(from);
+        messagingTemplate.convertAndSendToUser(msg.getSendTo(),"/queue/notifications",personUser.getName()+":"+msg.getMessage());
     }
 
     /**

@@ -27,13 +27,32 @@
             min-height: 2000px;
             /*padding-top: 70px;*/
         }
+        .person-list{
+            cursor: pointer;
+        }
+        .person-list:hover{
+            animation: test 0.4s ease;
+            background-color:#a3bce4;
+            width: 100%;
+        }
+        .person-list-active{
+            animation: test 0.4s ease;
+            background-color:#e8e8e8;
+            width: 100%;
+        }
+        .message-r{
+            float: right;
+        }
+        .message-l{
+            float: left;
+        }
     </style>
 </head>
 <body>
 <div class="container">
     <div class="row clearfix">
         <div class="col-md-12 column">
-            <ul class="nav nav-tabs">
+            <ul class="nav nav-tabs" style="margin-bottom: 20px;">
                 <li >
                     <a th:href="@{/index}">首页</a>
                 </li>
@@ -69,25 +88,36 @@
                     </ul>
                 </li>
             </ul>
-            <form class="form-horizontal" role="form" id="chatForm" >
-                <div class="form-group">
-                    <label for="account" class="col-sm-2 control-label">用户账户</label>
-                    <div class="col-sm-4">
-                        <input type="text" class="form-control" id="account" name="account"/>
+
+            <div class="col-md-3 column">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">
+                            用户列表
+                        </h3>
                     </div>
-                    <label for="message" class="col-sm-2 control-label">消息</label>
-                    <div class="col-sm-4">
-                        <input type="text" class="form-control" id="message" />
+                    <div class="panel-body" th:each="p:${persons}">
+                        <div th:text="${p.name}" class="person-list" th:alt-title="${p.account}" th:onclick="'startChat(this,\''+${p.account}+'\',\''+${p.name}+'\')'"></div>
                     </div>
+                    <!--<div class="panel-footer">-->
+                    <!--Panel footer-->
+                    <!--</div>-->
                 </div>
-                <div class="form-group">
-                    <div class="col-sm-offset-2 col-sm-10">
-                        <button type="submit" class="btn btn-default">提交</button>
-                        <button type="button" id="stop" class="btn btn-default">结束聊天</button>
+            </div>
+            <div class="col-md-9 column">
+                    <div id="messages" style="height:400px;border: solid #e8e8e8 1px;border-bottom: #ffffff;">
+                        <div id="prompt" style="background: #e8e8e8;width: 100%;height: 30px;text-align: center;line-height: 30px;">暂没有建立聊天</div>
                     </div>
-                </div>
-            </form>
-            <div id="messages">
+                    <form class="form-horizontal" role="form" id="chatForm" >
+                        <div class="input-group">
+                            <input type="hidden" id="account"/>
+                            <input type="text" class="form-control" id="message" style="border: solid #e8e8e8 1px;"/>
+                            <span class="input-group-btn">
+                                <button class="btn btn-default" type="submit">send</button>
+                                <!--<button type="button" id="stop" class="btn btn-default">结束聊天</button>-->
+                            </span>
+                        </div>
+                    </form>
 
             </div>
         </div>
@@ -106,32 +136,130 @@
 <script th:src="@{/js/My97DatePicker/WdatePicker.js}"></script>
 <!--通过th:inline="javascript"添加到script标签，这样JavaScript代码即可访问model中的属性-->
 <script type="text/javascript">
+    var heartflag = false;
+    var webSocket = null;
+    var tryTime = 0;
+    $(function () {
+        initSocket();
+    });
+
     $("#chatForm").submit(function (e) {
         e.preventDefault();
         sendMsg();
     });
-    var socket = new SockJS("/endpointChat");//连接SockJS的endpoint名称为'endpointChat'
-    var stompClient = Stomp.over(socket);//使用stomp自协议的WebSocket客户端
-    stompClient.connect('guest','guest',function(frame){//连接WebSocket客户端
-        stompClient.subscribe("/user/queue/notifications",handleNotification);
-    });
+
     function  handleNotification(message) {
         console.log("handleNotification");
-        $("#messages").append("<b>收到："+message.body+"</b><br/>");
+        var span = $("<span>"+message.body+"</span><br/>");
+        span.addClass("message-l");
+        console.log(message);
+        $("#messages").append(span);
     }
+
+    function startChat(obj,account,name){
+        $(".person-list").removeClass("person-list-active");
+        $(obj).addClass("person-list-active");
+
+        $("#account").val(account);
+        $("#prompt").text("与"+name+"聊天中");
+    }
+
     function sendMsg() {
         // stompClient.send("/app/chat",{},JSON.stringify({
         //     'message':$("#message").val(),
         //     'sendTo':$("#account").val()
         // }));
+        var account = $("#account").val();
+        if(account==""){
+           alert("请先选择聊天对象");
+           return false;
+        }
+        var message = $("#message").val();
+        if(message==""){
+            alert("填写消息，才能发送");
+            return false;
+        }
         stompClient.send("/chat",{},JSON.stringify({
-            'message':$("#message").val(),
-            'sendTo':$("#account").val()
+            'message':message,
+            'sendTo':account
         }));
+        var span = $("<span>我："+message+"</span><br/>");
+        span.addClass("message-r");
+        $("#messages").append(span);
     }
     $("#stop").click(function (){
         socket.close();
     })
+
+    var socket;
+    var stompClient;
+    /**
+     * 初始化websocket，建立连接
+     */
+    function initSocket() {
+        socket = new SockJS("/endpointChat");//连接SockJS的endpoint名称为'endpointChat'
+        stompClient = Stomp.over(socket);//使用stomp自协议的WebSocket客户端
+        stompClient.connect('guest','guest',function(frame){//连接WebSocket客户端
+            stompClient.subscribe("/user/queue/notifications",handleNotification);
+        });
+
+        /*// 收到服务端消息
+        stompClient.onmessage = function (msg) {
+            console.log("收到消息")
+            $("#messages").append(getNowFormatDate()+"  收到消息 : "+msg.data+"<br/>");
+        };
+
+        // 异常
+        stompClient.onerror = function (event) {
+            heartflag = false;
+            $("#prompt").text(getNowFormatDate()+" 连接异常");
+        };
+
+        // 建立连接
+        stompClient.onopen = function (event) {
+            heartflag = true;
+            heart();
+            $("#prompt").text(getNowFormatDate()+" 建立连接成功");
+            tryTime = 0;
+        };
+
+        // 断线重连
+        stompClient.onclose = function () {
+            heartflag = false;
+            // 重试10次，每次之间间隔10秒
+            if (10 > tryTime) {
+                setTimeout(function () {
+                    stompClient = null;
+                    tryTime++;
+                    initSocket();
+                    $("#prompt").text( getNowFormatDate()+" 第"+tryTime+"次重连");
+                }, 3*1000);
+            } else {
+                alert("重连失败.");
+            }
+        };*/
+    }
+
+    function getNowFormatDate() {
+        var date = new Date();
+        var seperator1 = "-";
+        var seperator2 = ":";
+        var month = date.getMonth() + 1;
+        var strDate = date.getDate();
+        month = month >= 10?month:"0"+month;
+        strDate = strDate >= 10?strDate:"0"+strDate;
+        var currentdate = date.getFullYear() + seperator1 + month + seperator1 + strDate
+            + " " + date.getHours() + seperator2 + date.getMinutes()
+            + seperator2 + date.getSeconds();
+        return currentdate;
+    }
+    // function heart() {
+    //     if (heartflag){
+    //         stompClient.send("心跳测试");
+    //         console.log(getNowFormatDate()+"  心跳 <br/>");
+    //     }
+    //     setTimeout("heart()", 10*60*1000);
+    // }
 </script>
 </body>
 </html>
