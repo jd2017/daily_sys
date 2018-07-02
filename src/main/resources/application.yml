@@ -1,6 +1,6 @@
 spring:
   profiles:
-    active: dev
+    active: pro
   application:
     name: daily-service
     thymeleaf:
@@ -46,4 +46,17 @@ spring:
     password: guest
     port: 5672
 
-
+---
+spring:
+  profiles: pro
+  datasource:
+    url: jdbc:mysql://47.105.38.159:3306/daily?useSSL=false
+    username: root
+    password: root
+    driver-class-name: com.mysql.jdbc.Driver
+    type: com.alibaba.druid.pool.DruidDataSource
+  rabbitmq:
+    host: 39.106.13.197
+    username: guest
+    password: guest
+    port: 5672
