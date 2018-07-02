@@ -152,7 +152,6 @@
         console.log("handleNotification");
         var span = $("<span>"+message.body+"</span><br/>");
         span.addClass("message-l");
-        console.log(message);
         $("#messages").append(span);
     }
 
@@ -186,6 +185,7 @@
         var span = $("<span>我："+message+"</span><br/>");
         span.addClass("message-r");
         $("#messages").append(span);
+        $("#message").val("");
     }
     $("#stop").click(function (){
         socket.close();
