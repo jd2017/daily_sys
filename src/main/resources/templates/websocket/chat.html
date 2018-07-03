@@ -113,12 +113,17 @@
                             <input type="hidden" id="account"/>
                             <input type="text" class="form-control" id="message" style="border: solid #e8e8e8 1px;"/>
                             <span class="input-group-btn">
-                                <button class="btn btn-default" type="submit">send</button>
+                                <button class="btn btn-default" type="submit">发送</button>
                                 <!--<button type="button" id="stop" class="btn btn-default">结束聊天</button>-->
+                                <button type="button" onclick="more();" class="btn btn-default ">
+                                    <span class="glyphicon glyphicon-time" th:alt-title="查看更多记录"></span>
+                                </button>
                             </span>
                         </div>
                     </form>
-
+                    <div id="historys" style="height:400px;border: solid #e8e8e8 1px;border-bottom: #ffffff;">
+                        <div style="background: #e8e8e8;width: 100%;height: 30px;text-align: center;line-height: 30px;">历史记录</div>
+                    </div>
             </div>
         </div>
     </div>
@@ -136,9 +141,7 @@
 <script th:src="@{/js/My97DatePicker/WdatePicker.js}"></script>
 <!--通过th:inline="javascript"添加到script标签，这样JavaScript代码即可访问model中的属性-->
 <script type="text/javascript">
-    var heartflag = false;
-    var webSocket = null;
-    var tryTime = 0;
+    var person ='${person}';
     $(function () {
         initSocket();
     });
@@ -148,9 +151,42 @@
         sendMsg();
     });
 
+    function  more() {
+        var account = $("#account").val();
+        if(account==""){
+            alert("请先选择聊天对象");
+            return false;
+        }
+        $.ajax({
+            url:"/api/v1/chat/queryHistoryMessage",
+            type:"post",
+            data:{
+                to:account
+            },
+            header:{"Authorization":"Bearer "+sessionStorage.jwt},
+            success:function (res) {console.log(res);
+                $.each(res,function(n,msg) {
+                    var senderName = msg.senderName;
+                    var class_="message-l";
+                    if(person.account==msg.sender){
+                        senderName="我";
+                        class_="message-r";
+                    }
+                    var span = $("<span>"+senderName+":"+msg.message+" "+msg.sendTime+"</span><br/>");
+                    span.addClass(class_);
+                    $("#historys").append(span);
+                });
+            },
+            error:function () {
+                console.log("出错");
+            }
+        })
+    }
+    
     function  handleNotification(message) {
-        console.log("handleNotification");
-        var span = $("<span>"+message.body+"</span><br/>");
+        var msg = JSON.parse(message.body);
+        console.log("handleNotification--msg:"+msg);
+        var span = $("<span>"+msg.senderName+":"+msg.message+" "+msg.sendTime+"</span><br/>");
         span.addClass("message-l");
         console.log(message);
         $("#messages").append(span);
@@ -165,10 +201,6 @@
     }
 
     function sendMsg() {
-        // stompClient.send("/app/chat",{},JSON.stringify({
-        //     'message':$("#message").val(),
-        //     'sendTo':$("#account").val()
-        // }));
         var account = $("#account").val();
         if(account==""){
            alert("请先选择聊天对象");
@@ -186,6 +218,7 @@
         var span = $("<span>我："+message+"</span><br/>");
         span.addClass("message-r");
         $("#messages").append(span);
+        $("#message").val("");
     }
     $("#stop").click(function (){
         socket.close();
@@ -202,42 +235,6 @@
         stompClient.connect('guest','guest',function(frame){//连接WebSocket客户端
             stompClient.subscribe("/user/queue/notifications",handleNotification);
         });
-
-        /*// 收到服务端消息
-        stompClient.onmessage = function (msg) {
-            console.log("收到消息")
-            $("#messages").append(getNowFormatDate()+"  收到消息 : "+msg.data+"<br/>");
-        };
-
-        // 异常
-        stompClient.onerror = function (event) {
-            heartflag = false;
-            $("#prompt").text(getNowFormatDate()+" 连接异常");
-        };
-
-        // 建立连接
-        stompClient.onopen = function (event) {
-            heartflag = true;
-            heart();
-            $("#prompt").text(getNowFormatDate()+" 建立连接成功");
-            tryTime = 0;
-        };
-
-        // 断线重连
-        stompClient.onclose = function () {
-            heartflag = false;
-            // 重试10次，每次之间间隔10秒
-            if (10 > tryTime) {
-                setTimeout(function () {
-                    stompClient = null;
-                    tryTime++;
-                    initSocket();
-                    $("#prompt").text( getNowFormatDate()+" 第"+tryTime+"次重连");
-                }, 3*1000);
-            } else {
-                alert("重连失败.");
-            }
-        };*/
     }
 
     function getNowFormatDate() {
@@ -253,13 +250,6 @@
             + seperator2 + date.getSeconds();
         return currentdate;
     }
-    // function heart() {
-    //     if (heartflag){
-    //         stompClient.send("心跳测试");
-    //         console.log(getNowFormatDate()+"  心跳 <br/>");
-    //     }
-    //     setTimeout("heart()", 10*60*1000);
-    // }
 </script>
 </body>
 </html>
