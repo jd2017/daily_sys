@@ -1,6 +1,6 @@
 spring:
   profiles:
-    active: pro
+    active: dev
   application:
     name: daily-service
     thymeleaf:
@@ -45,7 +45,13 @@ spring:
     username: guest
     password: guest
     port: 5672
-
+  data:
+    mongodb:
+      host: 39.106.13.197
+      port: 27017
+      username: chatdb
+      password: chatdbzyjkx
+      database: chatDB
 ---
 spring:
   profiles: pro
