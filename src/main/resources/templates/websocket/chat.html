@@ -72,6 +72,7 @@
                     <a href="#" data-toggle="dropdown" class="dropdown-toggle"><span th:text="${person.name}"></span><strong class="caret"></strong></a>
                     <ul class="dropdown-menu">
                         <li>
+                            <input type="hidden" id="me" th:value="${person.account}"/>
                             <a href="#">个人信息</a>
                         </li>
                         <li>
@@ -141,7 +142,6 @@
 <script th:src="@{/js/My97DatePicker/WdatePicker.js}"></script>
 <!--通过th:inline="javascript"添加到script标签，这样JavaScript代码即可访问model中的属性-->
 <script type="text/javascript">
-    var person ='${person}';
     $(function () {
         initSocket();
     });
@@ -165,10 +165,11 @@
             },
             header:{"Authorization":"Bearer "+sessionStorage.jwt},
             success:function (res) {console.log(res);
+                $("#historys").html("");
                 $.each(res,function(n,msg) {
                     var senderName = msg.senderName;
-                    var class_="message-l";
-                    if(person.account==msg.sender){
+                    var class_="message-l";console.log($("#me").val()+"=="+msg.sender);
+                    if($("#me").val()==msg.sender){
                         senderName="我";
                         class_="message-r";
                     }

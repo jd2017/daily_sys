@@ -73,7 +73,6 @@ public class ChatController {
         log.error("ChatController-->error handling message:"+ t.getMessage());
     }
 
-    //进入聊天室页面  点对点
     @RequestMapping("/queryHistoryMessage")
     @ResponseBody
     public List<Message> queryHistoryMessage(Principal principal, String to){

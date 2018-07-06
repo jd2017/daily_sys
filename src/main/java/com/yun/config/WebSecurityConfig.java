@@ -81,6 +81,12 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter{
 //        return rememberMeServices ;
 //    }
 
+    @Override
+    @Bean
+    public AuthenticationManager authenticationManagerBean() throws Exception {
+        return super.authenticationManagerBean();
+    }
+
     @Bean
     public SecureAuthenticationTokenFilter authenticationTokenFilterBean() throws Exception{
         return new SecureAuthenticationTokenFilter();

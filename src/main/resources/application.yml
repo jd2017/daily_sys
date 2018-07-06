@@ -52,6 +52,7 @@ spring:
       username: chatdb
       password: chatdbzyjkx
       database: chatDB
+      
 ---
 spring:
   profiles: pro

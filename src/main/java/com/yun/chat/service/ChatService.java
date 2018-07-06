@@ -18,7 +18,7 @@ public class ChatService {
     private ChatRepositity chatRepositity;
     public void sendMsg(Message msg){
 //        messagingTemplate.convertAndSendToUser(msg.getSendTo(),"/queue/notifications",msg.getSenderName()+":"+msg.getMessage());
-        chatRepositity.insert(msg);
+        chatRepositity.save(msg);
         messagingTemplate.convertAndSendToUser(msg.getSendTo(),"/queue/notifications",msg);
     }
 
