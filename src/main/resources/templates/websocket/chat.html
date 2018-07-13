@@ -147,6 +147,7 @@
     });
 
     $("#chatForm").submit(function (e) {
+        console.log("ddddddddddd")
         e.preventDefault();
         sendMsg();
     });
@@ -193,6 +194,7 @@
     }
 
     function startChat(obj,account,name){
+        $("#historys").html("");
         $(".person-list").removeClass("person-list-active");
         $(obj).addClass("person-list-active");
 
@@ -211,7 +213,8 @@
             alert("填写消息，才能发送");
             return false;
         }
-        stompClient.send("/chat",{},JSON.stringify({
+        debugger;
+        stompClient.send("/app/chat",{},JSON.stringify({
             'message':message,
             'sendTo':account
         }));
@@ -233,6 +236,7 @@
         socket = new SockJS("/endpointChat");//连接SockJS的endpoint名称为'endpointChat'
         stompClient = Stomp.over(socket);//使用stomp自协议的WebSocket客户端
         stompClient.connect('guest','guest',function(frame){//连接WebSocket客户端
+            console.log("stompClient.connect")
             stompClient.subscribe("/user/queue/notifications",handleNotification);
         });
     }

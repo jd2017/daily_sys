@@ -45,6 +45,17 @@ spring:
     username: guest
     password: guest
     port: 5672
+    listener:
+      simple:
+        default-requeue-rejected: false
+        retry:
+          enabled: true
+          max-attempts: 5
+          max-interval: 2000
+    publisher-confirms: true
+    publisher-returns: true
+    template:
+      mandatory: true
   data:
     mongodb:
       host: 39.106.13.197

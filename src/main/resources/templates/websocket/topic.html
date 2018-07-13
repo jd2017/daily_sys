@@ -1,0 +1,65 @@
+<!DOCTYPE HTML>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <meta http-equiv="x-ua-compatible" content="IE=edge"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1"/>
+    <title>广播式rabbitmq</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <!--使用@{}引用web静态资源，这在jsp下是极易出错的-->
+    <link th:href="@{/js/bootstrap-3.3.7/css/bootstrap.min.css}" rel="stylesheet"/>
+    <link th:href="@{/js/bootstrap-3.3.7/css/bootstrap-theme.min.css}" rel="stylesheet"/>
+    <!--[if lt IE 9]>
+    <script th:src="@{js/html5shiv/html5shiv.js}"></script>
+    <script th:src="@{js/respond.min.js}"></script>
+    <![ENDIF]-->
+    <style>
+
+    </style>
+</head>
+<body onload="disconnect()">
+<noscript><h2 style="color: #ff0000">貌似你的浏览器不支持websocket</h2></noscript>
+<div>
+    <div >
+        <label>消息内容</label><input type="text" id="message"/>
+        <button onclick="sendName()">发送</button>
+        <p id="response"></p>
+    </div>
+</div>
+<script th:src="@{/js/websocket/sockjs.min.js}" type="text/javascript"></script>
+<script th:src="@{/js/websocket/stomp.min.js}" type="text/javascript"></script>
+<script th:src="@{/js/jquery-1.12.4.min.js}" type="text/javascript"></script>
+<script th:src="@{/js/bootstrap-3.3.7/js/bootstrap.min.js}" type="text/javascript"></script>
+<script>
+ var stompClient = null;
+ $(function () {
+     connect()
+ });
+
+ function connect(){
+     var socket = new SockJS("/endpointTopic");//连接SockJS的endpoint名称为'endpointWS'
+     stompClient = Stomp.over(socket);//使用stomp自协议的WebSocket客户端
+     console.log('connect');
+     stompClient.connect({},function(frame){//连接WebSocket客户端
+         console.log("已连接");
+         stompClient.subscribe('/topic/messages',function(response){//通过stompClient.subscribe订阅/topic/getResponse目标发送的消息，这个是在控制器的@SendTo中定义的
+             console.log("-=====");
+             var msg = JSON.parse(response.body);
+             showResponse(msg.senderName+"发来消息:"+msg.message);
+         });
+     });
+ }
+
+ function showResponse(message) {
+     console.log("-====="+message);
+     var response = $('#response');
+     response.html(message);
+ }
+
+ function  sendName() {
+     var message = $("#message").val();
+     stompClient.send("/sendMessage",{},JSON.stringify({'message':message}));//通过stompClient.send向/welcome目标发送消息，这个是在控制器的@MessageMapping中定义的
+ }
+</script>
+</body>
+</html>

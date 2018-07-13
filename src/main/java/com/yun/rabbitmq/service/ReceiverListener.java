@@ -1,6 +1,7 @@
 package com.yun.rabbitmq.service;
 
 import com.yun.common.Constant;
+import com.yun.common.RabbitConstant;
 import com.yun.rabbitmq.domain.MyMessage;
 import org.springframework.amqp.rabbit.annotation.RabbitHandler;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
@@ -16,7 +17,7 @@ public class ReceiverListener {
 //        System.out.println("收到<"+message+">");
 //    }
 //http://wenda.workerman.net/?/question/2810
-    @RabbitListener(queues = Constant.QUEUE_RABBITMQ_LIVE_CHAT)
+    @RabbitListener(queues = RabbitConstant.QUEUE_TOPIC)
     @RabbitHandler
     public void receiver(MyMessage myMessage) {
        System.out.println("收到<"+myMessage.getSender()+"发来的消息："+myMessage.getMsg()+">");

@@ -5,9 +5,11 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
+import java.io.Serializable;
+
 @Data
 @Document(collection = "chatmessage")
-public class Message {
+public class Message implements Serializable {
     @Id
     private String id;
     private String sender;//发送消息的人员账户

@@ -19,7 +19,7 @@ import java.util.List;
 import static org.springframework.data.mongodb.core.aggregation.Aggregation.*;
 
 @Repository
-public class ChatRepositity {
+public class ChatMongoRepositity {
     @Autowired
     private MongoOperations mongo;
 
@@ -27,6 +27,12 @@ public class ChatRepositity {
 //        mongo.insert(message);
         mongo.save(message,"chatmessage");//第二个参数是要保存的文档存储的名称
     }
+
+    public void save(Message message,String collection){
+//        mongo.insert(message);
+        mongo.save(message,collection);//第二个参数是要保存的文档存储的名称
+    }
+
 
     public AggregationResults<Message> queryHistoryMessage(String from, String to){
 //        $project：修改输入文档的结构。可以用来重命名、增加或删除域，也可以用于创建计算结果以及嵌套文档。

@@ -16,6 +16,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
         SockJS会优先选用websocket   withSockJS()为"/endpoint*"开启SockJS功能 前端会用到sockjs.min.js*/
         registry.addEndpoint("/endpointWS").withSockJS();//注册一个stomp的endpoint，并指定使用SockJS协议  广播式
         registry.addEndpoint("/endpointChat").withSockJS();//注册一个名为endpointChat的endpoint 点对点
+        registry.addEndpoint("/endpointTopic").withSockJS();//注册一个名为endpointTopic的endpoint 广播式
     }
     @Override
     public void configureMessageBroker(MessageBrokerRegistry registry) {//配置消息代理（Message Broker）
@@ -23,15 +24,18 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 //       registry.enableSimpleBroker("/queue","/topic");//点对点式应增加一个/queue消息代理
 
        //启用STOMP代理中继（broker relay）功能,并将其目的地前缀设置为"/queue"和"/topic"
-       registry.enableStompBrokerRelay("/queue","/topic")
+       registry.enableStompBrokerRelay("/exchange","/queue","/topic")
                .setRelayHost("39.106.13.197")
                .setRelayPort(61613)
                .setClientLogin("guest")
                .setClientPasscode("guest")
                .setSystemLogin("guest")
-               .setSystemPasscode("guest");
+               .setSystemPasscode("guest")
+               .setSystemHeartbeatSendInterval(5000)
+               .setSystemHeartbeatReceiveInterval(4000);
 
-       //将应用的前缀设置为app,所有目的地以"/app" 打头的消息都将会路由到带有@MessageMapping注解的方法中，而不会发布到代理队列或主题中
-//       registry.setApplicationDestinationPrefixes("/app");
+       registry.setUserDestinationPrefix("/user");
+       //应用程序目的地; 将应用的前缀设置为app,所有目的地以"/app" 打头的消息都将会路由到带有@MessageMapping注解的方法中，而不会发布到代理队列或主题中
+       registry.setApplicationDestinationPrefixes("/app");
     }
 }
