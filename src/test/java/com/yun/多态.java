@@ -8,6 +8,7 @@ public class 多态 {
         System.out.println(new B().name);//子类name
         System.out.println(new B().desc);//子类desc
         b.staticFF();//父类静态方法
+        System.out.println("测试");
     }
     static class A{
         protected int value=1;
