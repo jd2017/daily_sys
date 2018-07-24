@@ -10,7 +10,7 @@ package com.yun.枚举;
 public enum EnumClass {
     //注意枚举类的所有实例必须在其首行显式列出，否则它不能产生实例,实例也可以为小写，不报错，但规范用大写
     SMALL("s"),MEDIUM("m"),LARGE("l"),MAX("max");
-
+    private static String jl;
     /**
      * 构造器只是在构造枚举常量的时候调用,构造器不能用public和protected修饰
      * @param cname

@@ -13,10 +13,6 @@ spring:
   mvc:
     favicon:
       enabled: false
-security:
-    user:
-       name: admin
-       password: 0
 server:
   port: 8443
   ssl:

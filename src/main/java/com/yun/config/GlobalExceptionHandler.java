@@ -12,7 +12,7 @@ import java.util.Map;
 /**
  * 全局异常处理 zyj
  */
-@ControllerAdvice
+@ControllerAdvice //将对于控制器的全局配置放置在同一个位置
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(value = Exception.class)
